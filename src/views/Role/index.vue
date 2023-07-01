@@ -1,0 +1,132 @@
+<template>
+  <div class="role">
+    <div class="header">
+      <el-input v-model="form.roleName" class="input" @change="getList" clearable placeholder="请输入角色名称" />
+      <el-button type="primary" @click="add">新增</el-button>
+    </div>
+    <div class="center" ref="centerRef">
+      <el-divider />
+      <el-table :border="true" :height="tableHeight" stripe :data="list">
+        <el-table-column prop="name" label="角色名称" />
+        <el-table-column prop="description" label="描述" />
+        <el-table-column label="操作">
+          <template #default="scope">
+            <el-button size="small" type="warning" @click.stop="editItem(scope.row)">编辑</el-button>
+            <el-button size="small" type="danger" @click.stop="deleteItem(scope.row.id)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+    <div class="footer">
+      <el-pagination :page-sizes="[10, 20, 30, 40]" background layout="prev, pager, next, sizes, total"
+        :total="form.total" />
+    </div>
+  </div>
+  <Edit v-if="flag" :title="title" @close="close" :item="currentItem"></Edit>
+</template>
+
+<script lang="ts" setup>
+import Axios from "@/utils/http";
+import { ElMessage, ElMessageBox } from "element-plus";
+import { onMounted, reactive, ref, toRaw } from "vue";
+import Edit from "./Edit/index.vue";
+
+const list = ref([]);
+const tableHeight = ref<number>();
+const centerRef = ref<HTMLElement>();
+const form = reactive({
+  roleName: '',
+  pageNumber: 1,
+  pageSize: 20,
+  total: 0
+});
+// dialog
+const flag = ref<boolean>(false);
+const title = ref<string>("新增角色");
+const currentItem = ref<any>();
+
+// 新增
+const add = () => {
+  title.value = "新增角色";
+  flag.value = true;
+};
+
+// 编辑 
+const editItem = (item: any) => {
+  currentItem.value = item;
+  flag.value = true;
+  title.value = "编辑角色";
+};
+
+// 删除
+const deleteItem = (id: number) => {
+  ElMessageBox.confirm(
+    '确定要删除此项吗？',
+    '删除',
+    {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'error',
+    }
+  )
+    .then(async () => {
+      let res = await Axios.post('/role/delete', { id });
+      if (res.status == 0) {
+        ElMessage.success("删除成功!");
+        getList();
+      } else {
+        ElMessage.error(res.message);
+      }
+    }).catch(e => console.log(e));
+};
+
+// 弹窗关闭回调
+const close = (f: boolean) => {
+  flag.value = false;
+  if (!f) return;
+  getList();
+};
+
+// 获取角色列表
+const getList = async () => {
+  let { data, total } = await Axios.post('/role/list', toRaw(form));
+  list.value = data;
+  form.total = total;
+};
+
+onMounted(() => {
+  getList();
+  let height = centerRef.value?.clientHeight;
+  tableHeight.value = height ? height - 20 : 0;
+});
+
+</script>
+
+<style lang="scss" scoped>
+.role {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .header {
+    height: 40px;
+
+    .input {
+      width: 200px;
+      margin-right: 15px;
+    }
+  }
+
+  .center {
+    flex: 1;
+  }
+
+  .footer {
+    padding: 10px 0;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: end;
+  }
+}
+</style>
