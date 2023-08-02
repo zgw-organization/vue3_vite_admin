@@ -1,15 +1,11 @@
-import useStore from "@/stores";
-import { getToken } from "@/utils/token";
-import {
-  createRouter,
-  createWebHistory,
-  type RouteRecordRaw,
-} from "vue-router";
+import useStore from '@/stores';
+import { getToken } from '@/utils/token';
+import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router';
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: "/login",
-    component: () => import("@/views/Login/index.vue"),
+    path: '/login',
+    component: () => import('@/views/Login/index.vue'),
   },
   // {
   //   path: "/",
@@ -38,8 +34,8 @@ const routes: Array<RouteRecordRaw> = [
   //   ],
   // },
   {
-    path: "/:catchAll(.*)",
-    component: () => import("@/views/Error/index.vue"),
+    path: '/:catchAll(.*)',
+    component: () => import('@/views/Error/index.vue'),
   },
 ];
 
@@ -56,25 +52,25 @@ const router = createRouter({
   routes,
 });
 
-const whileList = ["/login", "/register"];
+const whileList = ['/login', '/register'];
 
 // 前置守卫
 router.beforeEach(async (to, from, next) => {
   const { user } = useStore();
   if (getToken()) {
-    if (to.path == "/login") {
-      next({ path: "/home" });
+    if (to.path == '/login') {
+      next({ path: '/home' });
     } else {
       if (user.router.length == 0) {
-        let routers = await user.getUserInfo();
-        let children = routers.map((item: any) => ({
+        const routers = await user.getUserInfo();
+        const children = routers.map((item: any) => ({
           path: item.router,
           component: () => import(`@/views/${item.component}/index.vue`),
         }));
         router.addRoute({
-          path: "/",
-          component: () => import("@/views/Layout/index.vue"),
-          children
+          path: '/',
+          component: () => import('@/views/Layout/index.vue'),
+          children,
         });
         next({ ...to, replace: true });
       } else {
@@ -85,7 +81,7 @@ router.beforeEach(async (to, from, next) => {
     if (whileList.includes(to.path)) {
       next();
     } else {
-      next({ path: "/login" });
+      next({ path: '/login' });
     }
   }
 });

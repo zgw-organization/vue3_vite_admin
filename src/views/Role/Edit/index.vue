@@ -1,25 +1,37 @@
 <template>
-  <el-dialog v-model="dialogVisible" destroy-on-close :title="title" @close="close" align-center>
+  <el-dialog v-model="dialogVisible" destroy-on-close :title="title" align-center @close="close">
     <el-form ref="formRef" :rules="rules" label-position="top" size="large" :model="dialogForm">
       <el-row>
         <el-form-item prop="name" label="角色名称">
-          <el-input size="large" placeholder="请输入角色名称" v-model="dialogForm.name" />
+          <el-input v-model="dialogForm.name" size="large" placeholder="请输入角色名称" />
         </el-form-item>
         <el-form-item prop="description" label="描述">
-          <el-input size="large" v-model="dialogForm.description" placeholder="请输入描述" />
+          <el-input v-model="dialogForm.description" size="large" placeholder="请输入描述" />
         </el-form-item>
       </el-row>
       <el-row>
         <el-col :span="12">
           <el-form-item label="菜单分配">
-            <el-tree ref="menuRef" :data="menu" show-checkbox node-key="id" :default-expand-all="true"
-              :props="menuProps" />
+            <el-tree
+              ref="menuRef"
+              :data="menu"
+              show-checkbox
+              node-key="id"
+              :default-expand-all="true"
+              :props="menuProps"
+            />
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="权限分配">
-            <el-tree ref="permissionRef" :data="permission" show-checkbox node-key="id" :default-expand-all="true"
-              :props="permissionProps" />
+            <el-tree
+              ref="permissionRef"
+              :data="permission"
+              show-checkbox
+              node-key="id"
+              :default-expand-all="true"
+              :props="permissionProps"
+            />
           </el-form-item>
         </el-col>
       </el-row>
@@ -40,30 +52,26 @@ import { onMounted, reactive, ref, toRaw } from 'vue';
 import { ElMessage } from 'element-plus';
 
 type Props = {
-  title: string,
-  item: any
-}
+  title: string;
+  item: any;
+};
 const props = defineProps<Props>();
 const dialogVisible = ref<boolean>(true);
 const formRef = ref<FormInstance>();
 const dialogForm = ref<{
-  name: string,
-  description: string,
-  menu: any[],
-  permission: any[]
+  name: string;
+  description: string;
+  menu: any[];
+  permission: any[];
 }>({
   name: '',
   description: '',
   menu: [],
-  permission: []
+  permission: [],
 });
 const rules = reactive<FormRules>({
-  name: [
-    { required: true, message: "请输入角色名称!", trigger: 'blur' },
-  ],
-  description: [
-    { required: true, message: "请输入描述", trigger: 'blur' },
-  ]
+  name: [{ required: true, message: '请输入角色名称!', trigger: 'blur' }],
+  description: [{ required: true, message: '请输入描述', trigger: 'blur' }],
 });
 
 // tree
@@ -87,7 +95,7 @@ const getPermissionList = async () => {
     permissionName: '',
     pageNumber: 1,
     pageSize: 2000,
-    total: 0
+    total: 0,
   });
   permission.value = data;
 };
@@ -98,31 +106,28 @@ const getMenuList = async () => {
     menuName: '',
     pageNumber: 1,
     pageSize: 2000,
-    total: 0
+    total: 0,
   });
   data.map((item: any) => {
-    if (item.title == "首页") {
+    if (item.title == '首页') {
       item.disabled = true;
     }
   });
   menu.value = data;
 };
 
-// 提交 
+// 提交
 const submit = () => {
-  formRef.value?.validate(async valid => {
+  formRef.value?.validate(async (valid) => {
     if (valid) {
-      dialogForm.value.menu = [
-        ...menuRef.value!.getCheckedKeys(),
-        ...menuRef.value!.getHalfCheckedKeys()
-      ];
+      dialogForm.value.menu = [...menuRef.value!.getCheckedKeys(), ...menuRef.value!.getHalfCheckedKeys()];
       dialogForm.value.permission = [
         ...permissionRef.value!.getCheckedKeys(),
-        ...permissionRef.value!.getHalfCheckedKeys()
+        ...permissionRef.value!.getHalfCheckedKeys(),
       ];
       if (dialogForm.value.menu.length && dialogForm.value.permission.length) {
-        if (props.title == "新增角色") {
-          let res = await Axios.post("/role/add", toRaw(dialogForm.value));
+        if (props.title == '新增角色') {
+          let res = await Axios.post('/role/add', toRaw(dialogForm.value));
           if (res.status == 0) {
             ElMessage.success(res.message);
             close(true);
@@ -130,7 +135,7 @@ const submit = () => {
             ElMessage.error(res.message);
           }
         } else {
-          let res = await Axios.post("/role/edit", toRaw(dialogForm.value));
+          let res = await Axios.post('/role/edit', toRaw(dialogForm.value));
           if (res.status == 0) {
             ElMessage.success(res.message);
             close(true);
@@ -139,26 +144,26 @@ const submit = () => {
           }
         }
       } else {
-        ElMessage.warning("请选择菜单、权限分配");
+        ElMessage.warning('请选择菜单、权限分配');
       }
     } else {
       return false;
     }
   });
-}
+};
 
 // 关闭
 const close = (flag = false) => {
   dialogVisible.value = false;
-  emits("close", flag);
+  emits('close', flag);
 };
 
-const emits = defineEmits(["close", "dialogBackFn"]);
+const emits = defineEmits(['close', 'dialogBackFn']);
 
 onMounted(async () => {
   await getPermissionList();
   await getMenuList();
-  if (props.title == "编辑角色") {
+  if (props.title == '编辑角色') {
     dialogForm.value = props.item;
     toRaw(props.item.menu).map((item: number) => {
       menuRef.value!.setChecked(item, true, false);
@@ -170,8 +175,6 @@ onMounted(async () => {
     menuRef.value!.setChecked(1, true, false);
   }
 });
-
-
 </script>
 
 <style lang="scss" scoped>

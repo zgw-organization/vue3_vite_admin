@@ -1,16 +1,14 @@
-import { createApp } from "vue";
-import { createPinia } from "pinia";
-import ElementPlus from "element-plus";
-import "element-plus/dist/index.css";
-import App from "./App.vue";
-import router from "./router";
-import plugins from "./plugins";
+import { createApp } from 'vue';
+import { createPinia } from 'pinia';
+import ElementPlus from 'element-plus';
+import 'element-plus/dist/index.css';
+import App from './App.vue';
+import router from './router';
+import plugins from './plugins';
 // import Loading from './plugins/Loading';
 // import { getStorage, setStorage } from "@/utils/token";
 
-
 const app = createApp(App);
-
 
 // 注册pinia并实现持久化
 // type Options = { key?: string };
@@ -34,7 +32,6 @@ const store = createPinia();
 //   })
 // );
 
-
 // 注册pinia
 app.use(store);
 
@@ -50,4 +47,4 @@ app.use(ElementPlus);
 // 注册公共插件
 app.use(plugins);
 
-app.mount("#app");
+app.mount('#app');

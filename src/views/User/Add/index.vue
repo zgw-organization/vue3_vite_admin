@@ -1,13 +1,20 @@
 <template>
   <el-form ref="formRef" :rules="rules" label-position="top" :inline="true" size="large" :model="dialogForm">
     <el-form-item prop="username" label="用户名">
-      <el-input size="large" placeholder="请输入用户名" v-model="dialogForm.username" />
+      <el-input v-model="dialogForm.username" size="large" placeholder="请输入用户名" />
     </el-form-item>
     <el-form-item prop="password" label="密码">
-      <el-input size="large" v-model="dialogForm.password" type="password" placeholder="请输入密码" show-password />
+      <el-input v-model="dialogForm.password" size="large" type="password" placeholder="请输入密码" show-password />
     </el-form-item>
     <el-form-item prop="roles" label="角色">
-      <el-select size="large" v-model="dialogForm.roles" multiple collapse-tags collapse-tags-tooltip placeholder="请选择角色">
+      <el-select
+        v-model="dialogForm.roles"
+        size="large"
+        multiple
+        collapse-tags
+        collapse-tags-tooltip
+        placeholder="请选择角色"
+      >
         <el-option v-for="item in roleList" :key="item?.value" :label="item?.label" :value="item?.value" />
       </el-select>
     </el-form-item>
@@ -21,7 +28,7 @@ import { onMounted, reactive, ref, toRaw } from 'vue';
 import { ElMessage } from 'element-plus';
 
 type RoleList = {
-  value: number,
+  value: number;
   label: string;
 };
 const roleList = ref<RoleList[]>();
@@ -29,18 +36,12 @@ const formRef = ref<FormInstance>();
 const dialogForm = reactive({
   username: '',
   password: '',
-  roles: []
+  roles: [],
 });
 const rules = reactive<FormRules>({
-  username: [
-    { required: true, message: "请输入用户名", trigger: 'blur' },
-  ],
-  password: [
-    { required: true, message: "请输入密码", trigger: 'blur' },
-  ],
-  roles: [
-    { required: true, message: "请选择角色", trigger: 'blur' },
-  ]
+  username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+  password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+  roles: [{ required: true, message: '请选择角色', trigger: 'blur' }],
 });
 
 onMounted(() => {
@@ -52,18 +53,18 @@ const getRoleList = async () => {
   let { data } = await Axios.get('/role/selectlist');
   roleList.value = data.map((item: any) => ({
     value: item.id,
-    label: `${item.name}-${item.description}`
+    label: `${item.name}-${item.description}`,
   }));
 };
 
 // 提交
 const submit = () => {
-  formRef.value?.validate(async valid => {
+  formRef.value?.validate(async (valid) => {
     if (valid) {
-      let res = await Axios.post("/user/add", toRaw(dialogForm));
+      let res = await Axios.post('/user/add', toRaw(dialogForm));
       if (res.status == 0) {
         ElMessage.success(res.message);
-        emits("dialogBackFn");
+        emits('dialogBackFn');
       } else {
         ElMessage.error(res.message);
       }
@@ -73,15 +74,12 @@ const submit = () => {
   });
 };
 
-const emits = defineEmits(["dialogBackFn"]);
+const emits = defineEmits(['dialogBackFn']);
 
 defineExpose({
   dialogForm,
-  submit
+  submit,
 });
-
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

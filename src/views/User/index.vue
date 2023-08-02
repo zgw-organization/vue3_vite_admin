@@ -1,39 +1,45 @@
 <template>
   <div class="user">
     <div class="header">
-      <el-input v-model="form.userName" class="input" @change="getList" clearable placeholder="请输入用户名称" />
+      <el-input v-model="form.userName" class="input" clearable placeholder="请输入用户名称" @change="getList" />
       <el-button type="primary" @click="showDialog('add')">新增</el-button>
     </div>
-    <div class="center" ref="centerRef">
+    <div ref="centerRef" class="center">
       <el-divider />
       <el-table :border="true" :height="tableHeight" stripe :data="list">
         <el-table-column prop="username" label="用户名称" />
-        <el-table-column label="创建时间" >
+        <el-table-column label="创建时间">
           <template #default="scope">
-            {{useFormatDate(scope.row.created)}}
+            {{ useFormatDate(scope.row.created) }}
           </template>
         </el-table-column>
-        <el-table-column label="更新时间" >
+        <el-table-column label="更新时间">
           <template #default="scope">
-            {{useFormatDate(scope.row.updated)}}
+            {{ useFormatDate(scope.row.updated) }}
           </template>
         </el-table-column>
         <el-table-column label="操作">
           <template #default="scope">
             <el-button size="small" @click.stop="showDialog('password', toRaw(scope.row))">修改密码</el-button>
-            <el-button size="small" type="warning" @click.stop="showDialog('bindrole', toRaw(scope.row))">编辑角色</el-button>
+            <el-button size="small" type="warning" @click.stop="showDialog('bindrole', toRaw(scope.row))"
+              >编辑角色</el-button
+            >
             <el-button size="small" type="danger" @click.stop="deleteItem(scope.row.id)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
     <div class="footer">
-      <el-pagination :page-sizes="[10, 20, 30, 40]" background layout="prev, pager, next, sizes, total"
-        :total="form.total" />
+      <el-pagination
+        :page-sizes="[10, 20, 30, 40]"
+        background
+        layout="prev, pager, next, sizes, total"
+        :total="form.total"
+      />
     </div>
   </div>
-  <el-dialog v-model="dialogVisible" destroy-on-close :title="currentCom.title" @close="close" align-center>
-    <component ref="childRef" :is="currentCom.component" @dialogBackFn="dialogBackFn"></component>
+  <el-dialog v-model="dialogVisible" destroy-on-close :title="currentCom.title" align-center @close="close">
+    <component :is="currentCom.component" ref="childRef" @dialog-back-fn="dialogBackFn"></component>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="dialogVisible = false">取消</el-button>
@@ -50,7 +56,7 @@ import { ElMessage, ElMessageBox } from 'element-plus';
 import Add from '@/views/User/Add/index.vue';
 import Password from '@/views/User/Password/index.vue';
 import BindRole from '@/views/User/BindRole/index.vue';
-import { useFormatDate } from '@/hooks/index'
+import { useFormatDate } from '@/hooks/index';
 
 const list = ref([]);
 const centerRef = ref<HTMLElement>();
@@ -61,11 +67,11 @@ const form = reactive({
   userName: '',
   pageNumber: 1,
   pageSize: 20,
-  total: 0
+  total: 0,
 });
 const currentCom = reactive<any>({
   title: '',
-  component: null
+  component: null,
 });
 
 onMounted(() => {
@@ -82,24 +88,21 @@ const dialogBackFn = () => {
 
 // 删除
 const deleteItem = (id: number) => {
-  ElMessageBox.confirm(
-    '确定要删除此项吗？',
-    '删除',
-    {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'error',
-    }
-  )
+  ElMessageBox.confirm('确定要删除此项吗？', '删除', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'error',
+  })
     .then(async () => {
       let res = await Axios.post('/user/delete', { id });
       if (res.status == 0) {
-        ElMessage.success("删除成功!");
+        ElMessage.success('删除成功!');
         getList();
       } else {
         ElMessage.error(res.message);
       }
-    }).catch(e => console.log(e));
+    })
+    .catch((e) => console.log(e));
 };
 
 // 提交
@@ -122,17 +125,17 @@ const showDialog = (type: string, info?: any) => {
     }
   });
   switch (type) {
-    case "add":
+    case 'add':
       currentCom.component = markRaw(Add);
-      currentCom.title = "新增用户";
+      currentCom.title = '新增用户';
       break;
-    case "password":
+    case 'password':
       currentCom.component = markRaw(Password);
-      currentCom.title = "修改密码";
+      currentCom.title = '修改密码';
       break;
     default:
       currentCom.component = markRaw(BindRole);
-      currentCom.title = "编辑角色";
+      currentCom.title = '编辑角色';
       nextTick(() => {
         // 添加默认roles
         childRef.value.dialogForm.roles.push(...info.roles);
@@ -147,7 +150,6 @@ const getList = async () => {
   list.value = data;
   form.total = total;
 };
-
 </script>
 
 <style lang="scss" scoped>

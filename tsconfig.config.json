@@ -3,9 +3,10 @@
   "include": ["vite.config.*", "vitest.config.*", "cypress.config.*"],
   "compilerOptions": {
     "composite": true,
+    "allowSyntheticDefaultImports": true,
     "types": ["node"],
     "preserveValueImports": false,
     "importsNotUsedAsValues": "remove",
-    "verbatimModuleSyntax": true,
+    "verbatimModuleSyntax": true
   }
 }

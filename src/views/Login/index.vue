@@ -1,12 +1,12 @@
 <template>
   <div className="login">
     <el-card class="login-container">
-      <el-form :rules="rules" ref="formRef" size="large" :model="form">
+      <el-form ref="formRef" :rules="rules" size="large" :model="form">
         <el-form-item prop="username">
-          <el-input size="large" placeholder="请输入用户名" v-model="form.username" />
+          <el-input v-model="form.username" size="large" placeholder="请输入用户名" />
         </el-form-item>
         <el-form-item prop="password">
-          <el-input size="large" v-model="form.password" type="password" placeholder="请输入密码" show-password />
+          <el-input v-model="form.password" size="large" type="password" placeholder="请输入密码" show-password />
         </el-form-item>
         <el-button type="primary" class="btn" size="large" @click="login">登录</el-button>
       </el-form>
@@ -16,7 +16,7 @@
 
 <script lang="ts" setup>
 import { ElMessage, type FormInstance, type FormRules } from 'element-plus';
-import { getCurrentInstance, reactive, ref, toRaw } from 'vue';
+import { reactive, ref, toRaw } from 'vue';
 import { useRouter } from 'vue-router';
 import Axios from '@/utils/http';
 import { setToken } from '@/utils/token';
@@ -29,39 +29,32 @@ const router = useRouter();
 const formRef = ref<FormInstance>();
 const form = reactive({
   username: 'admin',
-  password: '123456'
+  password: '123456',
 });
 const rules = reactive<FormRules>({
-  username: [
-    { required: true, message: "请输入用户名!", trigger: 'blur' },
-  ],
-  password: [
-    { required: true, message: "请输入密码!", trigger: 'blur' },
-  ]
+  username: [{ required: true, message: '请输入用户名!', trigger: 'blur' }],
+  password: [{ required: true, message: '请输入密码!', trigger: 'blur' }],
 });
 
 // 登录
 const login = () => {
-  formRef.value?.validate(async valid => {
+  formRef.value?.validate(async (valid) => {
     if (valid) {
       const res = await Axios.post('/login', toRaw(form));
       if (res.status == 0) {
-        ElMessage.success("登录成功");
+        ElMessage.success('登录成功');
         // 设置token
         setToken(res.token);
-        router.push("/home");
+        router.push('/home');
       } else {
-        ElMessage.error("用户名密码错误!");
+        ElMessage.error('用户名密码错误!');
       }
     } else {
-      ElMessage.error("请输入用户名密码!");
+      ElMessage.error('请输入用户名密码!');
       return false;
     }
   });
 };
-
-
-
 </script>
 
 <style lang="scss" scoped>

@@ -1,21 +1,20 @@
-import auth from "@/directives/auth";
-import move from "@/directives/move";
-import type { App } from "vue";
+import auth from '@/directives/auth';
+import move from '@/directives/move';
+import type { App } from 'vue';
 // import mitt from 'mitt';
 
 const directives: Record<string, any> = {
   auth,
-  move
+  move,
 };
 
 export default {
-  install(app: App, option: any) {
-
+  install(app: App) {
     // 注册指令
     Object.keys(directives).forEach((key) => {
-      app.directive(key, directives[key])
+      app.directive(key, directives[key]);
     });
-    
+
     // const Mit = mitt();
     // typescript注册
     // 扩展ComponentCustomProperties(用于增强组件实例类型以支持自定义全局属性)类型获取类型提示

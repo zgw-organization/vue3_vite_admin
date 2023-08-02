@@ -7,22 +7,19 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 
-
 const isShow = ref<boolean>(false);
 
 // 显示
-const show = () => isShow.value = true;
+const show = () => (isShow.value = true);
 
 // 隐藏
-const hide = () => isShow.value = false;
+const hide = () => (isShow.value = false);
 
 defineExpose({
   isShow,
   show,
-  hide
+  hide,
 });
-
-
 </script>
 
 <style lang="scss" scoped>

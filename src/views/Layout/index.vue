@@ -2,13 +2,14 @@
   <el-container class="layout">
     <el-aside class="sider">
       <div class="logo"></div>
-      <el-menu 
-        :default-active="route.path" 
-        active-text-color="#ffd04b" 
-        background-color="#545c64" 
+      <el-menu
+        :default-active="route.path"
+        active-text-color="#ffd04b"
+        background-color="#545c64"
         unique-opened
         router
-        text-color="#fff">
+        text-color="#fff"
+      >
         <Sidebar :data="user.menu"></Sidebar>
       </el-menu>
     </el-aside>
@@ -18,9 +19,7 @@
           <div class="user-name">{{ user.info.username }}</div>
           <div class="user-logout">
             <el-popconfirm title="是否确认退出？" confirm-button-text="是" cancel-button-text="否" @confirm="logout">
-              <template #reference>
-                退出
-              </template>
+              <template #reference> 退出 </template>
             </el-popconfirm>
           </div>
         </div>
@@ -39,7 +38,7 @@
 import Sidebar from '@/components/Sidebar/index.vue';
 import useStore from '@/stores';
 import { clearToken } from '@/utils/token';
-import { onMounted, reactive, ref, toRaw } from 'vue';
+// import { onMounted, reactive, ref, toRaw } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -51,9 +50,8 @@ const logout = (): void => {
   // 清楚token
   clearToken();
   user.$reset();
-  router.push("/login");
-}
-
+  router.push('/login');
+};
 </script>
 
 <style lang="scss" scoped>
@@ -94,7 +92,7 @@ const logout = (): void => {
 
     .logo {
       height: 32px;
-      background: rgba(255, 255, 255, .2);
+      background: rgba(255, 255, 255, 0.2);
       margin: 16px;
     }
 

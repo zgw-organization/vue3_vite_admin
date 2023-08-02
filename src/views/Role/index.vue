@@ -1,10 +1,10 @@
 <template>
   <div class="role">
     <div class="header">
-      <el-input v-model="form.roleName" class="input" @change="getList" clearable placeholder="请输入角色名称" />
+      <el-input v-model="form.roleName" class="input" clearable placeholder="请输入角色名称" @change="getList" />
       <el-button type="primary" @click="add">新增</el-button>
     </div>
-    <div class="center" ref="centerRef">
+    <div ref="centerRef" class="center">
       <el-divider />
       <el-table :border="true" :height="tableHeight" stripe :data="list">
         <el-table-column prop="name" label="角色名称" />
@@ -18,18 +18,22 @@
       </el-table>
     </div>
     <div class="footer">
-      <el-pagination :page-sizes="[10, 20, 30, 40]" background layout="prev, pager, next, sizes, total"
-        :total="form.total" />
+      <el-pagination
+        :page-sizes="[10, 20, 30, 40]"
+        background
+        layout="prev, pager, next, sizes, total"
+        :total="form.total"
+      />
     </div>
   </div>
-  <Edit v-if="flag" :title="title" @close="close" :item="currentItem"></Edit>
+  <Edit v-if="flag" :title="title" :item="currentItem" @close="close"></Edit>
 </template>
 
 <script lang="ts" setup>
-import Axios from "@/utils/http";
-import { ElMessage, ElMessageBox } from "element-plus";
-import { onMounted, reactive, ref, toRaw } from "vue";
-import Edit from "./Edit/index.vue";
+import Axios from '@/utils/http';
+import { ElMessage, ElMessageBox } from 'element-plus';
+import { onMounted, reactive, ref, toRaw } from 'vue';
+import Edit from './Edit/index.vue';
 
 const list = ref([]);
 const tableHeight = ref<number>();
@@ -38,46 +42,43 @@ const form = reactive({
   roleName: '',
   pageNumber: 1,
   pageSize: 20,
-  total: 0
+  total: 0,
 });
 // dialog
 const flag = ref<boolean>(false);
-const title = ref<string>("新增角色");
+const title = ref<string>('新增角色');
 const currentItem = ref<any>();
 
 // 新增
 const add = () => {
-  title.value = "新增角色";
+  title.value = '新增角色';
   flag.value = true;
 };
 
-// 编辑 
+// 编辑
 const editItem = (item: any) => {
   currentItem.value = item;
   flag.value = true;
-  title.value = "编辑角色";
+  title.value = '编辑角色';
 };
 
 // 删除
 const deleteItem = (id: number) => {
-  ElMessageBox.confirm(
-    '确定要删除此项吗？',
-    '删除',
-    {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'error',
-    }
-  )
+  ElMessageBox.confirm('确定要删除此项吗？', '删除', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'error',
+  })
     .then(async () => {
       let res = await Axios.post('/role/delete', { id });
       if (res.status == 0) {
-        ElMessage.success("删除成功!");
+        ElMessage.success('删除成功!');
         getList();
       } else {
         ElMessage.error(res.message);
       }
-    }).catch(e => console.log(e));
+    })
+    .catch((e) => console.log(e));
 };
 
 // 弹窗关闭回调
@@ -99,7 +100,6 @@ onMounted(() => {
   let height = centerRef.value?.clientHeight;
   tableHeight.value = height ? height - 20 : 0;
 });
-
 </script>
 
 <style lang="scss" scoped>

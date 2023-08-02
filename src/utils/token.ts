@@ -1,4 +1,4 @@
-const TOKEN_KEY = "geek_pc";
+const TOKEN_KEY = 'geek_pc';
 
 export const getToken = () => sessionStorage.getItem(TOKEN_KEY);
 export const setToken = (token: string) => sessionStorage.setItem(TOKEN_KEY, token);

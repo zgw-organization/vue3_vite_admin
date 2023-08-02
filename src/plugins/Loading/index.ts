@@ -1,4 +1,4 @@
-import { createVNode, render, type App, type VNode } from "vue";
+import { createVNode, render, type App, type VNode } from 'vue';
 import Loading from './index.vue';
 
 export default {
@@ -9,11 +9,11 @@ export default {
     render(Vnode, document.body);
     // 绑定loading
     app.config.globalProperties.$loading = {
-      show: Vnode.component?.exposed?.show,  
-      hide: Vnode.component?.exposed?.hide
+      show: Vnode.component?.exposed?.show,
+      hide: Vnode.component?.exposed?.hide,
     };
-  }
-}
+  },
+};
 
 // 插件 (Plugins) 是一种能为 Vue 添加全局功能的工具代码
 

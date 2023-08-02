@@ -13,29 +13,24 @@
 </template>
 
 <script lang="ts" setup>
-
 type SidebarList = {
-  router: string,
-  title: string,
-  icon?: string,
-  children?: SidebarList[] | []
+  router: string;
+  title: string;
+  icon?: string;
+  children?: SidebarList[] | [];
 };
 
 type Props = {
-  data?: SidebarList[]
+  data?: SidebarList[];
 };
 
 defineProps<Props>();
-
-
 </script>
 
 <script lang="ts">
 export default {
-  name: "SidebarItem"
-}
+  name: 'SidebarItem',
+};
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

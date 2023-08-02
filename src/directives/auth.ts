@@ -1,8 +1,8 @@
-import type { Directive } from "vue";
+import type { Directive } from 'vue';
 
 // 权限按钮
 const vAuth: Directive<HTMLElement, any> = (el, bingding) => {
-  let permission = [1, 2, 3];
+  const permission = [1, 2, 3];
   if (!permission.includes(bingding.value)) {
     el.style.display = 'none';
   }

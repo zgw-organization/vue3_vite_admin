@@ -1,13 +1,21 @@
 <template>
   <div class="permission">
     <div class="header">
-      <el-input v-model="form.permissionName" class="input" @change="getList" clearable placeholder="请输入权限名称" />
+      <el-input v-model="form.permissionName" class="input" clearable placeholder="请输入权限名称" @change="getList" />
       <el-button type="primary" @click="add">新增</el-button>
     </div>
-    <div class="center" ref="centerRef">
+    <div ref="centerRef" class="center">
       <el-divider />
-      <el-table highlight-current-row @current-change="handleCurrentChange" :height="tableHeight" stripe row-key="id"
-        :border="true" default-expand-all :data="list">
+      <el-table
+        highlight-current-row
+        :height="tableHeight"
+        stripe
+        row-key="id"
+        :border="true"
+        default-expand-all
+        :data="list"
+        @current-change="handleCurrentChange"
+      >
         <el-table-column prop="name" label="名称" />
         <el-table-column prop="alias" label="别名" />
         <el-table-column label="创建时间">
@@ -29,18 +37,22 @@
       </el-table>
     </div>
     <div class="footer">
-      <el-pagination :page-sizes="[10, 20, 30, 40]" background layout="prev, pager, next, sizes, total"
-        :total="form.total" />
+      <el-pagination
+        :page-sizes="[10, 20, 30, 40]"
+        background
+        layout="prev, pager, next, sizes, total"
+        :total="form.total"
+      />
     </div>
   </div>
-  <Edit v-if="flag" :title="title" @close="close" :item="currentItem"></Edit>
+  <Edit v-if="flag" :title="title" :item="currentItem" @close="close"></Edit>
 </template>
 
 <script lang="ts" setup>
-import Axios from "@/utils/http";
-import { ElMessageBox, ElMessage } from "element-plus";
-import { onMounted, reactive, ref, toRaw } from "vue";
-import Edit from "./Edit/index.vue";
+import Axios from '@/utils/http';
+import { ElMessageBox, ElMessage } from 'element-plus';
+import { onMounted, reactive, ref, toRaw } from 'vue';
+import Edit from './Edit/index.vue';
 import { useFormatDate } from '@/hooks/index';
 
 const list = ref([]);
@@ -51,26 +63,25 @@ const form = reactive({
   permissionName: '',
   pageNumber: 1,
   pageSize: 20,
-  total: 0
+  total: 0,
 });
 // dialog
 const flag = ref<boolean>(false);
-const title = ref<string>("新增权限");
+const title = ref<string>('新增权限');
 const currentItem = ref<any>();
-
 
 // 新增
 const add = () => {
   currentItem.value = currentRow.value ? currentRow.value.id : 0;
   flag.value = true;
-  title.value = "新增权限";
+  title.value = '新增权限';
 };
 
-// 编辑 
+// 编辑
 const editItem = (item: any) => {
   currentItem.value = item;
   flag.value = true;
-  title.value = "编辑权限";
+  title.value = '编辑权限';
 };
 
 // 弹窗关闭回调
@@ -82,29 +93,26 @@ const close = (f: boolean) => {
 
 // 当前行改变
 const handleCurrentChange = (val: any) => {
-  currentRow.value = val
-}
+  currentRow.value = val;
+};
 
 // 删除
 const deleteItem = (id: number) => {
-  ElMessageBox.confirm(
-    '确定要删除此项吗？',
-    '删除',
-    {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'error',
-    }
-  )
+  ElMessageBox.confirm('确定要删除此项吗？', '删除', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'error',
+  })
     .then(async () => {
       let res = await Axios.post('/permission/delete', { id });
       if (res.status == 0) {
-        ElMessage.success("删除成功!");
+        ElMessage.success('删除成功!');
         getList();
       } else {
         ElMessage.error(res.message);
       }
-    }).catch(e => console.log(e));
+    })
+    .catch((e) => console.log(e));
 };
 
 // 获取权限列表
@@ -119,7 +127,6 @@ onMounted(() => {
   let height = centerRef.value?.clientHeight;
   tableHeight.value = height ? height - 20 : 0;
 });
-
 </script>
 
 <style lang="scss" scoped>
