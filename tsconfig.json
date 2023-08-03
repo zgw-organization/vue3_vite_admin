@@ -21,10 +21,9 @@
     "baseUrl": ".", //查询的基础路径
     //路径映射,配合别名使用
     "paths": {
-      "@/*": ["src/*"],
-      "#/*": ["types/*"]
+      "@/*": ["src/*"]
     },
-    "types": ["element-plus/global"],
+    "types": ["vite/client", "element-plus/global"],
     "preserveValueImports": false,
     "importsNotUsedAsValues": "remove",
     "verbatimModuleSyntax": true

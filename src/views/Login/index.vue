@@ -38,7 +38,7 @@ const rules = reactive<FormRules>({
 
 // 登录
 const login = () => {
-  formRef.value?.validate(async (valid) => {
+  formRef.value?.validate(async (valid: any) => {
     if (valid) {
       const res = await Axios.post('/login', toRaw(form));
       if (res.status == 0) {

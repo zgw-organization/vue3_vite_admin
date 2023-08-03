@@ -14,7 +14,7 @@ import { ElMessage } from 'element-plus';
 import { useRouter } from 'vue-router';
 import { clearToken } from '@/utils/token';
 
-const dialogForm = reactive({
+const dialogForm = reactive<{ password: any; id: number }>({
   password: [],
   id: 0,
 });

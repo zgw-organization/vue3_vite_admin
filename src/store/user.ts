@@ -26,6 +26,12 @@ const userStore = defineStore('user', {
       return router;
     },
   },
+  // 持久化
+  persist: {
+    key: 'user',
+    storage: window.sessionStorage,
+    // paths: ['info', 'info.name'],
+  },
 });
 
 export default userStore;

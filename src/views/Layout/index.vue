@@ -36,7 +36,7 @@
 
 <script lang="ts" setup>
 import Sidebar from '@/components/Sidebar/index.vue';
-import useStore from '@/stores';
+import useStore from '@/store';
 import { clearToken } from '@/utils/token';
 // import { onMounted, reactive, ref, toRaw } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -111,3 +111,4 @@ const logout = (): void => {
   }
 }
 </style>
+@/store

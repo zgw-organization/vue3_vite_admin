@@ -1,11 +1,11 @@
 import axios from 'axios';
-import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { getToken } from './token';
 
 class Http {
   instance: AxiosInstance;
   baseConfig: AxiosRequestConfig = {
-    baseURL: import.meta.env.VITE_HTTP,
+    baseURL: import.meta.env.VITE_BASE_URL,
     timeout: 5000,
   };
   constructor() {
@@ -13,7 +13,7 @@ class Http {
     this.instance = axios.create(Object.assign(this.baseConfig));
     // 添加请求拦截器
     this.instance.interceptors.request.use(
-      (config: AxiosRequestConfig) => {
+      (config: InternalAxiosRequestConfig) => {
         const token = getToken();
         if (token) {
           config!.headers!['Authorization'] = token;

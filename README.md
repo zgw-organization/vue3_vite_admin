@@ -55,3 +55,6 @@ test增加测试，包括单元测试、集成测试等
 build构建系统或外部依赖项的更改
 ci自动化流程配置或脚本修改
 revert回退某个commit提交
+
+# 静态资源处理 new URL('../assets/images/home.png', import.meta.url).href
+# 组件自动化注册  读取@/components/BaseEchartsModel下所有.vue文件  import.meta.glob('@/components/BaseEchartsModel/*.vue');
