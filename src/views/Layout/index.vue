@@ -1,7 +1,7 @@
 <template>
   <el-container class="layout">
     <el-aside class="sider">
-      <div class="logo"></div>
+      <div class="logo"><strong>vue3_vite_admin</strong></div>
       <el-menu
         :default-active="route.path"
         active-text-color="#ffd04b"
@@ -89,9 +89,13 @@ const logout = (): void => {
     background: #545c64;
     overflow: hidden;
     user-select: none;
+    width: 13vw;
 
     .logo {
       height: 32px;
+      line-height: 32px;
+      text-align: center;
+      color: #fff;
       background: rgba(255, 255, 255, 0.2);
       margin: 16px;
     }
@@ -111,4 +115,3 @@ const logout = (): void => {
   }
 }
 </style>
-@/store

@@ -13,11 +13,11 @@ const routes: Array<RouteRecordRaw> = [
   //     {
   //       path: '/home',
   //       component: () => import('@/views/Home/index.vue'),
-  //       // beforeEnter: auth, //路由独享守卫
-  //       // meta: {
-  //       //   title: "管理页", // 页面标题
-  //       //   auth: true, //需要登录权限
-  //       // },
+  //       beforeEnter: auth, //路由独享守卫
+  //       meta: {
+  //         title: "管理页", // 页面标题
+  //         auth: true, //需要登录权限
+  //       },
   //     },
   //     {
   //       path: '/user',

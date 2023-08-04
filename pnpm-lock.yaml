@@ -3,6 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@commitlint/cli': ^17.6.7
   '@commitlint/config-conventional': ^17.6.7
+  '@types/mockjs': ^1.0.7
   '@types/node': ^16.11.56
   '@typescript-eslint/eslint-plugin': ^6.2.1
   '@typescript-eslint/parser': ^6.2.1
@@ -17,6 +18,7 @@ specifiers:
   eslint-plugin-vue: ^9.16.1
   husky: ^8.0.3
   lint-staged: ^13.2.3
+  mockjs: ^1.1.0
   npm-run-all: ^4.1.5
   pinia: ^2.0.21
   pinia-plugin-persistedstate: ^3.2.0
@@ -43,6 +45,7 @@ dependencies:
 devDependencies:
   '@commitlint/cli': registry.npmmirror.com/@commitlint/cli/17.6.7
   '@commitlint/config-conventional': registry.npmmirror.com/@commitlint/config-conventional/17.6.7
+  '@types/mockjs': registry.npmmirror.com/@types/mockjs/1.0.7
   '@types/node': registry.npmmirror.com/@types/node/16.18.39
   '@typescript-eslint/eslint-plugin': registry.npmmirror.com/@typescript-eslint/eslint-plugin/6.2.1_j6xx3z2bnxhrxzjhzeomjwp6aa
   '@typescript-eslint/parser': registry.npmmirror.com/@typescript-eslint/parser/6.2.1_7haavtekmro7ptbnqmctjaodju
@@ -55,6 +58,7 @@ devDependencies:
   eslint-plugin-vue: registry.npmmirror.com/eslint-plugin-vue/9.16.1_eslint@8.46.0
   husky: registry.npmmirror.com/husky/8.0.3
   lint-staged: registry.npmmirror.com/lint-staged/13.2.3
+  mockjs: registry.npmmirror.com/mockjs/1.1.0
   npm-run-all: registry.npmmirror.com/npm-run-all/4.1.5
   prettier: registry.npmmirror.com/prettier/3.0.0
   typescript: registry.npmmirror.com/typescript/5.1.6
@@ -960,6 +964,12 @@ packages:
     resolution: {integrity: sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@types/minimist/-/minimist-1.2.2.tgz}
     name: '@types/minimist'
     version: 1.2.2
+    dev: true
+
+  registry.npmmirror.com/@types/mockjs/1.0.7:
+    resolution: {integrity: sha512-OCxXz6hEaJOVpRwuJMiVY5a6LtJcih+br9gwB/Q8ooOBikvk5FpBQ31OlNimXo3EqKha1Z7PFBni+q9m+8NCWg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@types/mockjs/-/mockjs-1.0.7.tgz}
+    name: '@types/mockjs'
+    version: 1.0.7
     dev: true
 
   registry.npmmirror.com/@types/node/16.18.39:
@@ -4043,6 +4053,15 @@ packages:
       pathe: registry.npmmirror.com/pathe/1.1.1
       pkg-types: registry.npmmirror.com/pkg-types/1.0.3
       ufo: registry.npmmirror.com/ufo/1.2.0
+    dev: true
+
+  registry.npmmirror.com/mockjs/1.1.0:
+    resolution: {integrity: sha512-eQsKcWzIaZzEZ07NuEyO4Nw65g0hdWAyurVol1IPl1gahRwY+svqzfgfey8U8dahLwG44d6/RwEzuK52rSa/JQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/mockjs/-/mockjs-1.1.0.tgz}
+    name: mockjs
+    version: 1.1.0
+    hasBin: true
+    dependencies:
+      commander: registry.npmmirror.com/commander/10.0.1
     dev: true
 
   registry.npmmirror.com/ms/2.1.2:

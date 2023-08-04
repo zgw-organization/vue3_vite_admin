@@ -5,7 +5,7 @@ import { getToken } from './token';
 class Http {
   instance: AxiosInstance;
   baseConfig: AxiosRequestConfig = {
-    baseURL: import.meta.env.VITE_BASE_URL,
+    baseURL: `${import.meta.env.VITE_BASE_URL}/api`,
     timeout: 5000,
   };
   constructor() {

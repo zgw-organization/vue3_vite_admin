@@ -1,4 +1,4 @@
-import Axios from '@/utils/http';
+import { getUserInfo } from '@/api';
 import { defineStore } from 'pinia';
 
 type User = {
@@ -17,7 +17,7 @@ const userStore = defineStore('user', {
   actions: {
     // 获取用户信息
     async getUserInfo() {
-      const res = await Axios.get('userinfo');
+      const res = await getUserInfo();
       const { userInfo, menu, permission, router } = res.data;
       this.info = userInfo;
       this.menu = menu;
@@ -27,11 +27,11 @@ const userStore = defineStore('user', {
     },
   },
   // 持久化
-  persist: {
-    key: 'user',
-    storage: window.sessionStorage,
-    // paths: ['info', 'info.name'],
-  },
+  // persist: {
+  //   key: 'user',
+  //   storage: window.sessionStorage,
+  //   // paths: ['info', 'permission', 'menu'],
+  // },
 });
 
 export default userStore;

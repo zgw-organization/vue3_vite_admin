@@ -1,7 +1,9 @@
-import useStore from '@/store';
-import { getToken } from '@/utils/token';
+// import useStore from '@/store';
+// import { getToken } from '@/utils/token';
 import { createRouter, createWebHistory } from 'vue-router';
 import routes from './routes';
+import useStore from '@/store';
+import { getToken } from '@/utils/token';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -25,7 +27,7 @@ router.beforeEach(async (to, _from, next) => {
     if (to.path == '/login') {
       next({ path: '/home' });
     } else {
-      if (user.router.length) {
+      if (!user.router.length) {
         const routers = await user.getUserInfo();
         const children = routers.map((item: any) => ({
           path: item.router,

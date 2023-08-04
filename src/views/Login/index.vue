@@ -8,18 +8,18 @@
         <el-form-item prop="password">
           <el-input v-model="form.password" size="large" type="password" placeholder="请输入密码" show-password />
         </el-form-item>
-        <el-button type="primary" class="btn" size="large" @click="login">登录</el-button>
+        <el-button type="primary" class="btn" size="large" :loading="loading" @click="login">登录</el-button>
       </el-form>
     </el-card>
   </div>
 </template>
 
 <script lang="ts" setup>
+import { userLogin } from '@/api';
+import { setToken } from '@/utils/token';
 import { ElMessage, type FormInstance, type FormRules } from 'element-plus';
 import { reactive, ref, toRaw } from 'vue';
 import { useRouter } from 'vue-router';
-import Axios from '@/utils/http';
-import { setToken } from '@/utils/token';
 
 // 使用插件loading
 // const instance = getCurrentInstance();
@@ -27,6 +27,7 @@ import { setToken } from '@/utils/token';
 
 const router = useRouter();
 const formRef = ref<FormInstance>();
+const loading = ref(false);
 const form = reactive({
   username: 'admin',
   password: '123456',
@@ -40,15 +41,17 @@ const rules = reactive<FormRules>({
 const login = () => {
   formRef.value?.validate(async (valid: any) => {
     if (valid) {
-      const res = await Axios.post('/login', toRaw(form));
-      if (res.status == 0) {
+      loading.value = true;
+      const { status, token } = await userLogin(toRaw(form));
+      if (status === 0) {
         ElMessage.success('登录成功');
         // 设置token
-        setToken(res.token);
+        setToken(token);
         router.push('/home');
       } else {
         ElMessage.error('用户名密码错误!');
       }
+      loading.value = false;
     } else {
       ElMessage.error('请输入用户名密码!');
       return false;
