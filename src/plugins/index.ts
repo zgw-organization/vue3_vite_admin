@@ -1,6 +1,7 @@
 import auth from '@/directives/auth';
 import move from '@/directives/move';
-import type { App } from 'vue';
+import { type App } from 'vue';
+import * as ElementPlusIconsVue from '@element-plus/icons-vue';
 // import mitt from 'mitt';
 
 const directives: Record<string, any> = {
@@ -10,10 +11,15 @@ const directives: Record<string, any> = {
 
 export default {
   install(app: App) {
-    // 注册指令
+    // 全局注册指令
     Object.keys(directives).forEach((key) => {
       app.directive(key, directives[key]);
     });
+
+    /// 全局注册element-plus icon
+    for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+      app.component(key, component);
+    }
 
     // const Mit = mitt();
     // type Filter = {
@@ -34,7 +40,5 @@ export default {
     //     return `123${val}`;
     //   }
     // };
-    // 全局组件注册
-    // app.component('组件名', component);
   },
 };

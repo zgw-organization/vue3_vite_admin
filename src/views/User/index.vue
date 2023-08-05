@@ -5,7 +5,7 @@
       <el-button type="primary" @click="showDialog('add')">新增</el-button>
     </div>
     <div ref="centerRef" class="center">
-      <el-divider />
+      <!-- <el-divider /> -->
       <el-table :border="true" :height="tableHeight" stripe :data="list">
         <el-table-column prop="username" label="用户名称" />
         <el-table-column label="创建时间">

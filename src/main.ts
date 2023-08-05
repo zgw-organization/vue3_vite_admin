@@ -6,7 +6,6 @@ import router from './router';
 import plugins from './plugins';
 import Loading from './plugins/Loading';
 import { mockRequest } from '@/mock';
-// import { getStorage, setStorage } from "@/utils/token";
 
 const app = createApp(App);
 

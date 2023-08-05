@@ -27,11 +27,11 @@ const userStore = defineStore('user', {
     },
   },
   // 持久化
-  // persist: {
-  //   key: 'user',
-  //   storage: window.sessionStorage,
-  //   // paths: ['info', 'permission', 'menu'],
-  // },
+  persist: {
+    key: 'user',
+    storage: window.sessionStorage,
+    paths: ['info', 'permission', 'menu'],
+  },
 });
 
 export default userStore;

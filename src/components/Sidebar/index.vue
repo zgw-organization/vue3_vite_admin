@@ -2,11 +2,17 @@
   <template v-for="item in data" :key="item.router">
     <el-sub-menu v-if="item.children && item.children.length" :index="item.router">
       <template #title>
+        <el-icon :size="16">
+          <component :is="item.icon"></component>
+        </el-icon>
         <span>{{ item.title }}</span>
       </template>
       <SidebarItem :data="item.children"></SidebarItem>
     </el-sub-menu>
     <el-menu-item v-else :index="item.router">
+      <el-icon :size="16">
+        <component :is="item.icon"></component>
+      </el-icon>
       <span>{{ item.title }}</span>
     </el-menu-item>
   </template>
@@ -16,7 +22,7 @@
 type SidebarList = {
   router: string;
   title: string;
-  icon?: string;
+  icon: string;
   children?: SidebarList[] | [];
 };
 
