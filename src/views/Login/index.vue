@@ -23,7 +23,7 @@ import { useRouter } from 'vue-router';
 
 // 使用插件loading
 // const instance = getCurrentInstance();
-// instance?.proxy?.$loading.show();
+// instance?.proxy?.$Loading.show();
 
 const router = useRouter();
 const formRef = ref<FormInstance>();
@@ -57,6 +57,12 @@ const login = () => {
       return false;
     }
   });
+};
+</script>
+
+<script lang="ts">
+export default {
+  name: 'Login',
 };
 </script>
 

@@ -31,10 +31,12 @@ router.beforeEach(async (to, _from, next) => {
         const routers = await user.getUserInfo();
         const children = routers.map((item: any) => ({
           path: item.router,
+          name: item.component, // 自定义路由缓存需要
           component: () => import(`@/views/${item.component}/index.vue`),
         }));
         router.addRoute({
           path: '/',
+          name: 'Layout', // 自定义路由缓存需要
           component: () => import('@/views/Layout/index.vue'),
           children,
         });

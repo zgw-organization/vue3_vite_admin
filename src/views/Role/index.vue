@@ -5,7 +5,6 @@
       <el-button type="primary" @click="add">新增</el-button>
     </div>
     <div ref="centerRef" class="center">
-      <el-divider />
       <el-table :border="true" :height="tableHeight" stripe :data="list">
         <el-table-column prop="name" label="角色名称" />
         <el-table-column prop="description" label="描述" />
@@ -100,6 +99,12 @@ onMounted(() => {
   let height = centerRef.value?.clientHeight;
   tableHeight.value = height ? height - 20 : 0;
 });
+</script>
+
+<script lang="ts">
+export default {
+  name: 'Role',
+};
 </script>
 
 <style lang="scss" scoped>

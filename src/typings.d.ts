@@ -12,7 +12,8 @@ type Lod = {
 
 declare module 'vue' {
   export interface ComponentCustomProperties {
-    $loading: Lod;
+    $Loading: Lod;
+    $Bus;
   }
 }
 

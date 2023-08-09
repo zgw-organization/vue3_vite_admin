@@ -12,6 +12,14 @@ const userStore = defineStore('user', {
     router: [],
     permission: [],
     info: <User>{},
+    tabs: [
+      {
+        title: '首页',
+        path: '/home',
+        name: 'Home',
+      },
+    ],
+    currentTabsValue: '首页',
   }),
   getters: {},
   actions: {
@@ -30,7 +38,7 @@ const userStore = defineStore('user', {
   persist: {
     key: 'user',
     storage: window.sessionStorage,
-    paths: ['info', 'permission', 'menu'],
+    paths: ['info', 'permission', 'menu', 'tabs', 'currentTabsValue'],
   },
 });
 

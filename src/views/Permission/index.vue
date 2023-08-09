@@ -5,7 +5,6 @@
       <el-button type="primary" @click="add">新增</el-button>
     </div>
     <div ref="centerRef" class="center">
-      <el-divider />
       <el-table
         highlight-current-row
         :height="tableHeight"
@@ -53,7 +52,7 @@ import Axios from '@/utils/http';
 import { ElMessageBox, ElMessage } from 'element-plus';
 import { onMounted, reactive, ref, toRaw } from 'vue';
 import Edit from './Edit/index.vue';
-import { useFormatDate } from '@/hooks/index';
+import { useFormatDate } from '@/hooks/commons';
 
 const list = ref([]);
 const currentRow = ref();
@@ -127,6 +126,12 @@ onMounted(() => {
   let height = centerRef.value?.clientHeight;
   tableHeight.value = height ? height - 20 : 0;
 });
+</script>
+
+<script lang="ts">
+export default {
+  name: 'Permission',
+};
 </script>
 
 <style lang="scss" scoped>

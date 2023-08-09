@@ -34,20 +34,19 @@
         </div>
       </el-header>
       <div class="tabs">
-        <el-tabs
-          v-model="editableTabsValue"
-          type="card"
-          class="demo-tabs"
-          closable
-          @tab-remove="removeTab"
-          @tab-click="tabClick"
-        >
-          <el-tab-pane v-for="(item, index) in editableTabs" :key="index" :label="item.title" :name="item.title">
+        <el-tabs v-model="currentTabsValue" type="card" class="demo-tabs" @tab-remove="removeTab" @tab-click="tabClick">
+          <el-tab-pane
+            v-for="(item, index) in tabs"
+            :key="index"
+            :label="item.title"
+            :name="item.title"
+            :closable="index !== 0"
+          >
           </el-tab-pane>
         </el-tabs>
       </div>
       <el-main>
-        <router-view></router-view>
+        <KeepAliveWrapper></KeepAliveWrapper>
       </el-main>
       <el-footer class="footer">
         <span>zhaoguowenaip@sina.com</span>
@@ -57,69 +56,72 @@
 </template>
 
 <script lang="ts" setup>
-import Sidebar from '@/components/Sidebar/index.vue';
+import Sidebar from '@/components/SIdebar.vue';
+import KeepAliveWrapper from '@/components/KeepAliveWrapper.vue';
 import useStore from '@/store';
 import { clearToken } from '@/utils/token';
 import type { TabPaneName, TabsPaneContext } from 'element-plus';
+import { storeToRefs } from 'pinia';
 import { ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { removeRouteKeepAliveByEvt, useKeepAliveRoute } from '@/hooks/useKeepAliveHelper';
 
 const router = useRouter();
 const route = useRoute();
 const { user } = useStore();
+const { tabs, currentTabsValue } = storeToRefs(user);
+const { removeOneRouteKeepAliveAndToOtherRoute } = useKeepAliveRoute();
 const isCollapse = ref(false);
-const editableTabsValue = ref('首页');
-const editableTabs = ref([
-  {
-    title: '首页',
-    path: '/home',
-  },
-]);
 
 // 选中侧边栏
 const handleSelect = (key: string) => {
-  const title = getMenuTitle(user.menu, key);
-  addTab(title, key);
+  const arr = getMenuTitleAndName(user.router, key);
+  if (!arr.length) return;
+  addTab(arr[0], key, arr[1]);
 };
 
 // 点击tab
 const tabClick = (tab: TabsPaneContext) => {
-  if (tab.props.name === editableTabsValue.value) return;
-  const item = editableTabs.value.find((item) => item.title === tab.props.name);
+  if (tab.props.name === currentTabsValue.value) return;
+  const item = tabs.value.find((item) => item.title === tab.props.name);
   router.push(item!.path);
 };
 
 // 添加tab
-const addTab = (title: string, path: string) => {
-  if (!editableTabs.value.some((item) => item.title === title)) {
-    editableTabs.value.push({ title, path });
+const addTab = (title: string, path: string, name: string) => {
+  if (!tabs.value.some((item) => item.title === title)) {
+    tabs.value.push({ title, path, name });
   }
-  editableTabsValue.value = title;
+  currentTabsValue.value = title;
 };
 
 // 删除tab
 const removeTab = (title: TabPaneName) => {
-  const index = editableTabs.value.findIndex((item) => item.title === title);
+  const index = tabs.value.findIndex((item) => item.title === title);
   if (!~index) return;
-  editableTabs.value.splice(index, 1);
-  if (title === editableTabsValue.value) {
-    const item = editableTabs.value[Math.min(index, editableTabs.value.length - 1)];
-    editableTabsValue.value = item.title;
-    router.push(item.path);
+  const remoteItem = tabs.value.splice(index, 1);
+  if (title === currentTabsValue.value) {
+    const item = tabs.value[Math.min(index, tabs.value.length - 1)];
+    currentTabsValue.value = item.title;
+    console.log(remoteItem[0].name, item.path);
+    removeOneRouteKeepAliveAndToOtherRoute(remoteItem[0].name, item.path);
+  } else {
+    // 删除不是当前tab的缓存
+    return removeRouteKeepAliveByEvt(remoteItem[0].name);
   }
 };
 
 // 获取title
-const getMenuTitle = (arr: any, keyValue: string): string => {
+const getMenuTitleAndName = (arr: any, keyValue: string): any[] => {
   for (let i = 0; i < arr.length; i++) {
     if (arr[i].router == keyValue) {
-      return arr[i].title;
+      return [arr[i].title, arr[i].component];
     }
     if (arr[i].children) {
-      return getMenuTitle(arr[i].children, keyValue);
+      return getMenuTitleAndName(arr[i].children, keyValue);
     }
   }
-  return '';
+  return [];
 };
 
 // 退出
@@ -128,6 +130,12 @@ const logout = (): void => {
   clearToken();
   user.$reset();
   router.push('/login');
+};
+</script>
+
+<script lang="ts">
+export default {
+  name: 'Layout',
 };
 </script>
 
@@ -179,11 +187,20 @@ const logout = (): void => {
   .tabs {
     padding-top: 10px;
     padding-left: 5px;
-    overflow-y: scroll;
+    overflow-y: hidden;
+  }
+
+  .el-tabs {
+    --el-tabs-header-height: 30px;
+  }
+
+  .el-tabs__item {
+    padding: 15px;
   }
 
   .el-main {
     padding: 5px;
+    overflow: hidden;
   }
 
   .sider {

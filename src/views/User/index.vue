@@ -56,7 +56,7 @@ import { ElMessage, ElMessageBox } from 'element-plus';
 import Add from '@/views/User/Add/index.vue';
 import Password from '@/views/User/Password/index.vue';
 import BindRole from '@/views/User/BindRole/index.vue';
-import { useFormatDate } from '@/hooks/index';
+import { useFormatDate } from '@/hooks/commons';
 
 const list = ref([]);
 const centerRef = ref<HTMLElement>();
@@ -149,6 +149,12 @@ const getList = async () => {
   let { data, total } = await Axios.post('/user/list', toRaw(form));
   list.value = data;
   form.total = total;
+};
+</script>
+
+<script lang="ts">
+export default {
+  name: 'User',
 };
 </script>
 
