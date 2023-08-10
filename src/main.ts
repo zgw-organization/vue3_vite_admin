@@ -5,7 +5,7 @@ import App from './App.vue';
 import router from './router';
 import plugins from './plugins';
 import Loading from './plugins/Loading';
-import { mockRequest } from '@/mock';
+// import { mockRequest } from '@/mock';
 
 const app = createApp(App);
 
@@ -15,9 +15,9 @@ const store = createPinia();
 store.use(piniaPluginPersistedstate);
 
 // 引入mock
-if (import.meta.env.MODE === 'development') {
-  mockRequest();
-}
+// if (import.meta.env.MODE === 'development') {
+//   mockRequest();
+// }
 
 // 注册pinia
 app.use(store);
