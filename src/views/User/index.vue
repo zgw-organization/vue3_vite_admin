@@ -88,7 +88,7 @@ const dialogBackFn = () => {
 
 // 删除
 const deleteItem = (id: number) => {
-  ElMessageBox.confirm('确定要删除此项吗？', '删除', {
+  ElMessageBox.alert('确定要删除此项吗？', '删除', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'error',

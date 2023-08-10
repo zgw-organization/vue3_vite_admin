@@ -4,6 +4,7 @@ import vueJsx from '@vitejs/plugin-vue-jsx';
 import AutoImport from 'unplugin-auto-import/vite';
 import Components from 'unplugin-vue-components/vite';
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers';
+import ElementPlus from 'unplugin-element-plus/vite';
 import viteCompression from 'vite-plugin-compression';
 import path from 'path';
 
@@ -23,6 +24,8 @@ export default ({ mode }: any) => {
       Components({
         resolvers: [ElementPlusResolver()],
       }),
+      // 对使用到的组件样式进行按需导入
+      ElementPlus({}),
       // 打包时生成gz文件
       {
         ...viteCompression(),
@@ -66,7 +69,7 @@ export default ({ mode }: any) => {
       cssCodeSplit: true, // css拆分
       sourcemap: false, // 不生成sourcemap
       minify: 'esbuild', // 是否禁用最小化混淆 esbuild(打包速度最快)  terser(打包体积最小)
-      assetsInlineLimit: 4000, // 小于该值图片将打包成base64
+      assetsInlineLimit: 4000, // 小于该值图片将打包成base64,
       rollupOptions: {
         output: {
           // 第三方插件分包
@@ -80,6 +83,11 @@ export default ({ mode }: any) => {
           assetFileNames: 'static/[ext]/[name]-[hash].[ext]',
         },
       },
+    },
+    // 配置esbuild
+    esbuild: {
+      // 构建时移除代码中的 console.log和debugger
+      drop: mode === 'production' ? ['console', 'debugger'] : [],
     },
   });
 };
