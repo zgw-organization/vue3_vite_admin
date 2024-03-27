@@ -36,6 +36,6 @@ declare module 'vue' {
     KeepAliveWrapper: typeof import('./src/components/KeepAliveWrapper.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    SIdebar: typeof import('./src/components/SIdebar.vue')['default']
+    Sidebar: typeof import('./src/components/Sidebar.vue')['default']
   }
 }

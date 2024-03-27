@@ -56,7 +56,7 @@
 </template>
 
 <script lang="ts" setup>
-import Sidebar from '@/components/SIdebar.vue';
+import Sidebar from '@/components/Sidebar.vue';
 import KeepAliveWrapper from '@/components/KeepAliveWrapper.vue';
 import useStore from '@/store';
 import { clearToken } from '@/utils/token';
