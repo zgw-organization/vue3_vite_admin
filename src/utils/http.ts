@@ -5,7 +5,8 @@ import { getToken } from './token';
 class Http {
   instance: AxiosInstance;
   baseConfig: AxiosRequestConfig = {
-    baseURL: `${import.meta.env.VITE_BASE_URL}/api`,
+    baseURL: `${import.meta.env.VITE_BASE_URL}/api/v1`,
+    withCredentials: true,
     timeout: 5000,
   };
   constructor() {
@@ -30,11 +31,12 @@ class Http {
         return res.data;
       },
       (err: any) => {
+        const data = err.response.data;
         // 未授权，请重新登录(401)
-        if (err.response.status === 401) {
+        if (data.code === 401) {
           window.location.href = '/login';
         }
-        return Promise.reject(err.response);
+        return Promise.reject(data);
       },
     );
   }

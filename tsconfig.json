@@ -1,7 +1,7 @@
 {
   "extends": "@vue/tsconfig/tsconfig.web.json",
   //需要检测的文件
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
+  "include": ["env.d.ts", "src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "auto-imports.d.ts"],
   "compilerOptions": {
     "target": "ESNext", // 将代码编译为最新版本的 JS
     "module": "ESNext", // 使用 ES Module 格式打包编译后的文件

@@ -1,8 +1,13 @@
 <template>
-  <router-view></router-view>
+  <!-- 配置中文 -->
+  <el-config-provider :locale="locale">
+    <router-view></router-view>
+  </el-config-provider>
 </template>
 
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import locale from 'element-plus/es/locale/lang/zh-cn';
+</script>
 
 <style lang="scss">
 html,

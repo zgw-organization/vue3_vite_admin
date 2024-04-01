@@ -8,14 +8,22 @@
         <el-form-item prop="password">
           <el-input v-model="form.password" size="large" type="password" placeholder="请输入密码" show-password />
         </el-form-item>
-        <el-button type="primary" class="btn" size="large" :loading="loading" @click="login">登录</el-button>
+        <el-form-item prop="code">
+          <el-col :span="19">
+            <el-input v-model="form.code" size="large" placeholder="请输入验证码" />
+          </el-col>
+          <el-col :span="5">
+            <img :src="codeUrl" alt="" @click="resetCode" />
+          </el-col>
+        </el-form-item>
+        <el-button type="primary" class="btn" size="large" :loading="loading" @click="userLogin">登录</el-button>
       </el-form>
     </el-card>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { userLogin } from '@/api';
+import { login } from '@/api';
 import { setToken } from '@/utils/token';
 import { ElMessage, type FormInstance, type FormRules } from 'element-plus';
 import { reactive, ref, toRaw } from 'vue';
@@ -31,25 +39,33 @@ const loading = ref(false);
 const form = reactive({
   username: 'admin',
   password: '123456',
+  code: '',
 });
 const rules = reactive<FormRules>({
   username: [{ required: true, message: '请输入用户名!', trigger: 'blur' }],
   password: [{ required: true, message: '请输入密码!', trigger: 'blur' }],
+  code: [{ required: true, message: '请输入验证码!', trigger: 'blur' }],
 });
+const codeUrl = ref('http://localhost:3300/api/v1/auth/code');
+
+// 重置验证码
+const resetCode = () => {
+  codeUrl.value = `${codeUrl.value}?${new Date().getTime()}`;
+};
 
 // 登录
-const login = () => {
+const userLogin = () => {
   formRef.value?.validate(async (valid: any) => {
     if (valid) {
       loading.value = true;
-      const { status, token } = await userLogin(toRaw(form));
-      if (status === 0) {
+      const { success, data, msg } = await login(toRaw(form));
+      if (success) {
         ElMessage.success('登录成功');
         // 设置token
-        setToken(token);
+        setToken(data.token);
         router.push('/home');
       } else {
-        ElMessage.error('用户名密码错误!');
+        ElMessage.error(msg);
       }
       loading.value = false;
     } else {
@@ -75,9 +91,15 @@ export default {
   top: 0;
   background-color: #2d3a4b;
 
+  img {
+    float: left;
+    height: 100%;
+    cursor: pointer;
+  }
+
   &-container {
     width: 440px;
-    height: 220px;
+    height: 300px;
     padding-top: 20px;
     position: absolute;
     left: 50%;
@@ -87,6 +109,7 @@ export default {
 
     .btn {
       width: 100%;
+      margin-top: 20px;
     }
   }
 }

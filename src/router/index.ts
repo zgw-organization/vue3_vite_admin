@@ -27,9 +27,9 @@ router.beforeEach(async (to, _from, next) => {
     if (to.path == '/login') {
       next({ path: '/home' });
     } else {
-      if (!user.router.length) {
-        const routers = await user.getUserInfo();
-        const children = routers.map((item: any) => ({
+      if (!user.routes.length) {
+        const routes = await user.getUserInfo();
+        const children = routes.map((item: any) => ({
           path: item.router,
           name: item.component, // 自定义路由缓存需要
           component: () => import(`@/views/${item.component}/index.vue`),

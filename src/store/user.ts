@@ -1,4 +1,4 @@
-import { getUserInfo } from '@/api';
+import { getProfile } from '@/api';
 import { defineStore } from 'pinia';
 
 type User = {
@@ -9,7 +9,7 @@ type User = {
 const userStore = defineStore('user', {
   state: () => ({
     menu: [],
-    router: [],
+    routes: [],
     permission: [],
     info: <User>{},
     tabs: [
@@ -25,20 +25,20 @@ const userStore = defineStore('user', {
   actions: {
     // 获取用户信息
     async getUserInfo() {
-      const res = await getUserInfo();
-      const { userInfo, menu, permission, router } = res.data;
-      this.info = userInfo;
+      const res = await getProfile();
+      const { routes, menu, permission, ...other } = res.data;
+      this.info = other;
       this.menu = menu;
       this.permission = permission;
-      this.router = router;
-      return router;
+      this.routes = routes;
+      return routes;
     },
   },
   // 持久化
   persist: {
     key: 'user',
     storage: window.sessionStorage,
-    paths: ['info', 'permission', 'menu', 'tabs', 'currentTabsValue'],
+    paths: ['tabs', 'currentTabsValue'],
   },
 });
 

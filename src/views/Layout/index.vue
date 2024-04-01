@@ -75,7 +75,7 @@ const isCollapse = ref(false);
 
 // 选中侧边栏
 const handleSelect = (key: string) => {
-  const arr = getMenuTitleAndName(user.router, key);
+  const arr = getMenuTitleAndName(user.menu, key);
   if (!arr.length) return;
   addTab(arr[0], key, arr[1]);
 };

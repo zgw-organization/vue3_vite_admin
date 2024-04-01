@@ -18,7 +18,14 @@ export default ({ mode }: any) => {
       vueJsx(),
       // element-plus自动导入
       AutoImport({
+        imports: ['vue', 'vue-router', 'pinia'],
         resolvers: [ElementPlusResolver()],
+        // 自动导入eslint配置
+        eslintrc: {
+          enabled: false, // eslint检查 已存在文件设置默认false，需要更新时再打开，防止每次更新都重新生成
+          filepath: './.eslintrc-auto-import.json',  // 生成的文件需要在.eslintrc extends中添加
+          globalsPropValue: true,
+        },
       }),
       // element-plus自动导入
       Components({
@@ -43,7 +50,7 @@ export default ({ mode }: any) => {
       // 支持ip访问
       host: true,
       // 自动打开浏览器
-      open: true,
+      // open: true,
       https: false,
       // 跨域代理
       //   proxy: {

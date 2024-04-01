@@ -1,11 +1,6 @@
 import Axios from '@/utils/http';
 
-// 登录
-export const userLogin = (params: { username: string; password: string }) => {
-  return Axios.post('/login', params);
-};
-
-// 获取用户信息
-export const getUserInfo = () => {
-  return Axios.get('/userinfo');
+// 获取用户列表
+export const getUserList = (params: any) => {
+  return Axios.post('/user/list', params);
 };
