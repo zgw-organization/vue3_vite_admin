@@ -1,17 +1,27 @@
 <template>
   <div class="role">
     <div class="header">
-      <el-input v-model="form.roleName" class="input" clearable placeholder="请输入角色名称" @change="getList" />
-      <el-button type="primary" @click="add">新增</el-button>
+      <el-input v-model="form.roleName" class="input" clearable placeholder="请输入角色名称" @change="getListHandler" />
+      <el-button type="primary" @click="addOrEditHandler('add')">新增</el-button>
     </div>
     <div ref="centerRef" class="center">
-      <el-table :border="true" :height="tableHeight" stripe :data="list">
-        <el-table-column prop="name" label="角色名称" />
-        <el-table-column prop="description" label="描述" />
-        <el-table-column label="操作">
+      <el-table :border="true" :height="tableHeight" stripe :data="listData">
+        <el-table-column prop="name" label="名称" :align="'center'" />
+        <el-table-column prop="description" label="描述" :align="'center'" />
+        <el-table-column label="创建时间" :align="'center'">
           <template #default="scope">
-            <el-button size="small" type="warning" @click.stop="editItem(scope.row)">编辑</el-button>
-            <el-button size="small" type="danger" @click.stop="deleteItem(scope.row.id)">删除</el-button>
+            {{ useFormatDate(scope.row.createTime) }}
+          </template>
+        </el-table-column>
+        <el-table-column label="更新时间" :align="'center'">
+          <template #default="scope">
+            {{ useFormatDate(scope.row.updateTime) }}
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" :align="'center'">
+          <template #default="scope">
+            <el-button size="small" type="warning" @click.stop="addOrEditHandler('edit', scope.row.id)">编辑</el-button>
+            <el-button size="small" type="danger" @click.stop="deleteItemHandler(scope.row.id)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -22,19 +32,20 @@
         background
         layout="prev, pager, next, sizes, total"
         :total="form.total"
+        @size-change="paginationSizeChangeHandler"
+        @current-change="paginationCurrentChangeHandler"
       />
     </div>
   </div>
-  <Edit v-if="flag" :title="title" :item="currentItem" @close="close"></Edit>
+  <Edit v-if="flag" :title="title" :item="editData" @close="dialogCloseCallback"></Edit>
 </template>
 
 <script lang="ts" setup>
-import Axios from '@/utils/http';
-import { ElMessage, ElMessageBox } from 'element-plus';
-import { onMounted, reactive, ref, toRaw } from 'vue';
 import Edit from './Edit/index.vue';
+import { useFormatDate } from '@/hooks/commons';
+import { deleteRole, getRoleById, getRoleList } from '@/api';
 
-const list = ref([]);
+const listData = ref([]);
 const tableHeight = ref<number>();
 const centerRef = ref<HTMLElement>();
 const form = reactive({
@@ -45,66 +56,75 @@ const form = reactive({
 });
 // dialog
 const flag = ref<boolean>(false);
-const title = ref<string>('新增角色');
-const currentItem = ref<any>();
-
-// 新增
-const add = () => {
-  title.value = '新增角色';
-  flag.value = true;
-};
-
-// 编辑
-const editItem = (item: any) => {
-  currentItem.value = item;
-  flag.value = true;
-  title.value = '编辑角色';
-};
-
-// 删除
-const deleteItem = (id: number) => {
-  ElMessageBox.confirm('确定要删除此项吗？', '删除', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'error',
-  })
-    .then(async () => {
-      let res = await Axios.post('/role/delete', { id });
-      if (res.status == 0) {
-        ElMessage.success('删除成功!');
-        getList();
-      } else {
-        ElMessage.error(res.message);
-      }
-    })
-    .catch((e) => console.log(e));
-};
-
-// 弹窗关闭回调
-const close = (f: boolean) => {
-  flag.value = false;
-  if (!f) return;
-  getList();
-};
-
-// 获取角色列表
-const getList = async () => {
-  let { data, total } = await Axios.post('/role/list', toRaw(form));
-  list.value = data;
-  form.total = total;
-};
+const title = ref<string>('');
+const editData = ref<any>();
 
 onMounted(() => {
-  getList();
+  getListHandler();
   let height = centerRef.value?.clientHeight;
   tableHeight.value = height ? height - 20 : 0;
 });
-</script>
 
-<script lang="ts">
-export default {
-  name: 'Role',
+// add / edit
+const addOrEditHandler = async (value: string, id?: number) => {
+  title.value = value;
+  if (id) {
+    let { data } = await getRoleById(id);
+    editData.value = data;
+  } else {
+    editData.value = null;
+  }
+  flag.value = true;
 };
+
+// deleted
+const deleteItemHandler = (id: number) => {
+  ElMessageBox.alert('确定要删除此项吗？', '删除', {
+    confirmButtonText: '确定',
+    type: 'error',
+  }).then(async () => {
+    let { code, message } = await deleteRole({ ids: [id] });
+    if (code == 200) {
+      ElMessage.success('删除成功!');
+      getListHandler();
+    } else {
+      ElMessage.error(message);
+    }
+  });
+};
+
+// pagination pagesize change
+const paginationSizeChangeHandler = (pageSize: number) => {
+  form.pageSize = pageSize;
+  getListHandler();
+};
+
+// pagination current change
+const paginationCurrentChangeHandler = (currentPage: number) => {
+  form.pageNumber = currentPage;
+  getListHandler();
+};
+
+// dialog close callback
+const dialogCloseCallback = (f: boolean) => {
+  flag.value = false;
+  if (!f) return;
+  getListHandler();
+};
+
+// get role list
+const getListHandler = async () => {
+  let {
+    data: { list, total },
+  } = await getRoleList(toRaw(form));
+  listData.value = list;
+  form.total = total;
+};
+
+// options
+defineOptions({
+  name: 'Role',
+});
 </script>
 
 <style lang="scss" scoped>
@@ -127,7 +147,7 @@ export default {
   }
 
   .footer {
-    padding: 10px 0;
+    padding: 10px;
     height: 40px;
     display: flex;
     align-items: center;

@@ -87,7 +87,6 @@ async function findRouteNameCompName(route: RouteLocationNormalizedLoaded): Prom
         return ret;
       }
       const compName = await getCompName(routeInfo.components.default);
-      console.log(compName);
       return {
         compName,
         routeName: curRouteName as string,
@@ -132,7 +131,6 @@ export function refreshCurRouteByEvt() {
 export async function aiAddRouteKeepAliveByEvt(route: RouteLocationNormalizedLoaded) {
   const _data = await findRouteNameCompName(route);
   if (_data) {
-    // console.log('aiAddCacheFromRouteInfo', _data)
     emitter.emit(addRouteCompKeepAliveEvt, _data);
   }
 }
@@ -205,7 +203,7 @@ export function removeRouteArrKeepAliveByEvt(routeNameArr: string[]) {
       if (compNameAndRouteName) {
         compNameArr.push(compNameAndRouteName.compName);
       } else {
-        console.warn(`当前缓存的路由名中，未找到[${routeName}]路由对应的组件名`);
+        // console.warn(`当前缓存的路由名中，未找到[${routeName}]路由对应的组件名`);
       }
     });
 
@@ -214,7 +212,6 @@ export function removeRouteArrKeepAliveByEvt(routeNameArr: string[]) {
         compNameArr,
         resolve,
       };
-      console.log(params);
       emitter.emit(removeRouteCompKeepAliveEvt, params);
     });
   }
@@ -292,13 +289,11 @@ export function useKeepAliveWrapperIncludeData() {
     if (routeNameCompName.keepAlive) {
       // 需要添加缓存
       if (idx < 0) {
-        console.log('include.value.push');
         include.value.push(routeNameCompName.compName);
       }
     } else {
       // 无需添加缓存
       if (idx >= 0) {
-        console.log('include.value.splice');
         include.value.splice(idx, 1);
       }
     }
@@ -383,7 +378,6 @@ export function useKeepAliveWrapperIncludeData() {
   emitter.on(addRouteCompKeepAliveEvt, (_data: unknown) => {
     const routeNameCompName = _data as RouteNameCompName;
     updateIncludeByRouteNameCompName(routeNameCompName);
-    // console.log('addRouteCompCacheEvt', addRouteCompKeepAliveEvt)
   });
   /**
    * 监听组件 keep-alive 缓存删除事件
@@ -400,7 +394,6 @@ export function useKeepAliveWrapperIncludeData() {
 
   const showRouterView = ref<boolean>(true);
   emitter.on(refreshCurRouteEvt, () => {
-    // console.log(refreshCurRouteEvt, curRouteName.value, routeNameCompNameMap)
     // 这里实际是让组件销毁
     showRouterView.value = false;
     if (curRouteName.value) {
@@ -417,7 +410,6 @@ export function useKeepAliveWrapperIncludeData() {
     }
     nextTick(() => {
       showRouterView.value = true;
-      // console.log(refreshCurRouteEvt)
       const compNameAndRouteName = curRouteName.value && routeNameCompNameMap.get(curRouteName.value);
       if (compNameAndRouteName && compNameAndRouteName.keepAlive) {
         // 如果原本这个组件就是支持缓存的，则继续让它支持缓存

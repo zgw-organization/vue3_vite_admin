@@ -103,7 +103,6 @@ const removeTab = (title: TabPaneName) => {
   if (title === currentTabsValue.value) {
     const item = tabs.value[Math.min(index, tabs.value.length - 1)];
     currentTabsValue.value = item.title;
-    console.log(remoteItem[0].name, item.path);
     removeOneRouteKeepAliveAndToOtherRoute(remoteItem[0].name, item.path);
   } else {
     // 删除不是当前tab的缓存

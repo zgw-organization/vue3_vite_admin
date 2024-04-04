@@ -58,14 +58,14 @@ const userLogin = () => {
   formRef.value?.validate(async (valid: any) => {
     if (valid) {
       loading.value = true;
-      const { success, data, msg } = await login(toRaw(form));
+      const { success, data, message } = await login(toRaw(form));
       if (success) {
         ElMessage.success('登录成功');
         // 设置token
         setToken(data.token);
         router.push('/home');
       } else {
-        ElMessage.error(msg);
+        ElMessage.error(message);
       }
       loading.value = false;
     } else {

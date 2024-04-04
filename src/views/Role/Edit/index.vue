@@ -1,5 +1,5 @@
 <template>
-  <el-dialog v-model="dialogVisible" destroy-on-close :title="title" align-center @close="close">
+  <el-dialog v-model="dialogVisible" destroy-on-close :title="title" align-center @close="closeHandler">
     <el-form ref="formRef" :rules="rules" label-position="top" size="large" :model="dialogForm">
       <el-row>
         <el-form-item prop="name" label="角色名称">
@@ -10,8 +10,8 @@
         </el-form-item>
       </el-row>
       <el-row>
-        <el-col :span="12">
-          <el-form-item label="菜单分配">
+        <el-col :span="10">
+          <el-form-item label="菜单分配：">
             <el-tree
               ref="menuRef"
               :data="menu"
@@ -22,8 +22,8 @@
             />
           </el-form-item>
         </el-col>
-        <el-col :span="12">
-          <el-form-item label="权限分配">
+        <el-col :span="8">
+          <el-form-item label="权限分配：">
             <el-tree
               ref="permissionRef"
               :data="permission"
@@ -39,39 +39,44 @@
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="submit">确定</el-button>
+        <el-button type="primary" @click="submitHandler">确定</el-button>
       </span>
     </template>
   </el-dialog>
 </template>
 
 <script lang="ts" setup>
-import Axios from '@/utils/http';
 import type { FormInstance, FormRules } from 'element-plus';
-import { onMounted, reactive, ref, toRaw } from 'vue';
-import { ElMessage } from 'element-plus';
+import { addRole, editRole, getMenuList, getPermissionList } from '@/api';
 
-type Props = {
+// props
+const props = defineProps<{
   title: string;
   item: any;
-};
-const props = defineProps<Props>();
+}>();
+
+// dialog
 const dialogVisible = ref<boolean>(true);
+
+// ref
 const formRef = ref<FormInstance>();
+
+// form
 const dialogForm = ref<{
+  id?: number;
   name: string;
   description: string;
-  menu: any[];
-  permission: any[];
+  menus: any[];
+  permissions: any[];
 }>({
   name: '',
   description: '',
-  menu: [],
-  permission: [],
+  menus: [],
+  permissions: [],
 });
 const rules = reactive<FormRules>({
   name: [{ required: true, message: '请输入角色名称!', trigger: 'blur' }],
-  description: [{ required: true, message: '请输入描述', trigger: 'blur' }],
+  description: [{ required: true, message: '请输入描述!', trigger: 'blur' }],
 });
 
 // tree
@@ -85,66 +90,52 @@ const menuProps = {
   disabled: 'disabled',
 };
 const menu = ref();
-const permission = ref();
 const menuRef = ref();
+const permission = ref();
 const permissionRef = ref();
 
-// 获取权限列表
-const getPermissionList = async () => {
-  let { data } = await Axios.post('/permission/list', {
-    permissionName: '',
-    pageNumber: 1,
-    pageSize: 2000,
-    total: 0,
-  });
+onMounted(async () => {
+  await getPermissionListHandler();
+  await getMenuListHandler();
+  if (props.title == 'edit') {
+    const data = props.item;
+    dialogForm.value = data;
+    data.menus.map((item: { id: number }) => {
+      menuRef.value!.setChecked(item.id, true, false);
+    });
+    data.permissions.map((item: { id: number }) => {
+      permissionRef.value!.setChecked(item.id, true, false);
+    });
+  }
+});
+
+// get permission list
+const getPermissionListHandler = async () => {
+  let { data } = await getPermissionList();
   permission.value = data;
 };
 
-// 获取菜单列表
-const getMenuList = async () => {
-  let { data } = await Axios.post('/menu/list', {
-    menuName: '',
-    pageNumber: 1,
-    pageSize: 2000,
-    total: 0,
-  });
-  data.map((item: any) => {
-    if (item.title == '首页') {
-      item.disabled = true;
-    }
-  });
+// get menu list
+const getMenuListHandler = async () => {
+  let { data } = await getMenuList();
   menu.value = data;
 };
 
-// 提交
-const submit = () => {
+// submit
+const submitHandler = () => {
   formRef.value?.validate(async (valid) => {
     if (valid) {
-      dialogForm.value.menu = [...menuRef.value!.getCheckedKeys(), ...menuRef.value!.getHalfCheckedKeys()];
-      dialogForm.value.permission = [
+      dialogForm.value.menus = [...menuRef.value!.getCheckedKeys(), ...menuRef.value!.getHalfCheckedKeys()];
+      dialogForm.value.permissions = [
         ...permissionRef.value!.getCheckedKeys(),
         ...permissionRef.value!.getHalfCheckedKeys(),
       ];
-      if (dialogForm.value.menu.length && dialogForm.value.permission.length) {
-        if (props.title == '新增角色') {
-          let res = await Axios.post('/role/add', toRaw(dialogForm.value));
-          if (res.status == 0) {
-            ElMessage.success(res.message);
-            close(true);
-          } else {
-            ElMessage.error(res.message);
-          }
-        } else {
-          let res = await Axios.post('/role/edit', toRaw(dialogForm.value));
-          if (res.status == 0) {
-            ElMessage.success(res.message);
-            close(true);
-          } else {
-            ElMessage.error(res.message);
-          }
-        }
+      if (dialogForm.value.menus.length && dialogForm.value.permissions.length) {
+        const { success, message } = await (props.title == 'add' ? addRole : editRole)(toRaw(dialogForm.value));
+        ElMessage[success ? 'success' : 'error'](success ? (props.title == 'add' ? '新增成功' : '编辑成功') : message);
+        closeHandler(true);
       } else {
-        ElMessage.warning('请选择菜单、权限分配');
+        ElMessage.error('请选择菜单、权限分配');
       }
     } else {
       return false;
@@ -152,29 +143,14 @@ const submit = () => {
   });
 };
 
-// 关闭
-const close = (flag = false) => {
+// close
+const closeHandler = (flag = false) => {
   dialogVisible.value = false;
   emits('close', flag);
 };
 
-const emits = defineEmits(['close', 'dialogBackFn']);
-
-onMounted(async () => {
-  await getPermissionList();
-  await getMenuList();
-  if (props.title == '编辑角色') {
-    dialogForm.value = props.item;
-    toRaw(props.item.menu).map((item: number) => {
-      menuRef.value!.setChecked(item, true, false);
-    });
-    toRaw(props.item.permission).map((item: number) => {
-      permissionRef.value!.setChecked(item, true, false);
-    });
-  } else {
-    menuRef.value!.setChecked(1, true, false);
-  }
-});
+// emits
+const emits = defineEmits(['close']);
 </script>
 
 <style lang="scss" scoped>

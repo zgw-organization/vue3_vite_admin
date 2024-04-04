@@ -101,17 +101,15 @@ const deleteItem = (id: number) => {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'error',
-  })
-    .then(async () => {
-      let res = await Axios.post('/permission/delete', { id });
-      if (res.status == 0) {
-        ElMessage.success('删除成功!');
-        getList();
-      } else {
-        ElMessage.error(res.message);
-      }
-    })
-    .catch((e) => console.log(e));
+  }).then(async () => {
+    let res = await Axios.post('/permission/delete', { id });
+    if (res.status == 0) {
+      ElMessage.success('删除成功!');
+      getList();
+    } else {
+      ElMessage.error(res.message);
+    }
+  });
 };
 
 // 获取权限列表

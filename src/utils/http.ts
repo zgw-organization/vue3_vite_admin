@@ -28,15 +28,15 @@ class Http {
     // 添加响应拦截器
     this.instance.interceptors.response.use(
       (res: AxiosResponse) => {
-        return res.data;
-      },
-      (err: any) => {
-        const data = err.response.data;
+        const data = res.data;
         // 未授权，请重新登录(401)
         if (data.code === 401) {
           window.location.href = '/login';
         }
-        return Promise.reject(data);
+        return data;
+      },
+      (err: any) => {
+        return Promise.reject(err);
       },
     );
   }
