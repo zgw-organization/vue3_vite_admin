@@ -47,7 +47,7 @@
 
 <script lang="ts" setup>
 import type { FormInstance, FormRules } from 'element-plus';
-import { addRole, editRole, getMenuList, getPermissionList } from '@/api';
+import { addRole, editRole, getMenuTree, getPermissionTree } from '@/api';
 
 // props
 const props = defineProps<{
@@ -111,13 +111,13 @@ onMounted(async () => {
 
 // get permission list
 const getPermissionListHandler = async () => {
-  let { data } = await getPermissionList();
+  let { data } = await getPermissionTree();
   permission.value = data;
 };
 
 // get menu list
 const getMenuListHandler = async () => {
-  let { data } = await getMenuList();
+  let { data } = await getMenuTree();
   menu.value = data;
 };
 

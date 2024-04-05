@@ -103,15 +103,19 @@ const deleteItemHandler = (id: string) => {
   ElMessageBox.alert('确定要删除此项吗？', '删除', {
     confirmButtonText: '确定',
     type: 'error',
-  }).then(async () => {
-    let { code, message } = await deleteUser({ ids: [id] });
-    if (code == 200) {
-      ElMessage.success('删除成功!');
-      getListHandler();
-    } else {
-      ElMessage.error(message);
-    }
-  });
+  })
+    .then(async () => {
+      let { code, message } = await deleteUser({ ids: [id] });
+      if (code == 200) {
+        ElMessage.success('删除成功!');
+        getListHandler();
+      } else {
+        ElMessage.error(message);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 // get user list

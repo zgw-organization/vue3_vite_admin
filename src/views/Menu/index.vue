@@ -1,8 +1,8 @@
 <template>
-  <div class="menu">
+  <div class="permission">
     <div class="header">
-      <el-input v-model="form.menuName" class="input" clearable placeholder="请输入菜单名称" @change="getList" />
-      <el-button type="primary" @click="add">新增</el-button>
+      <el-input v-model="form.menuName" class="input" clearable placeholder="请输入菜单名称" @change="getListHandler" />
+      <el-button type="primary" @click="addOrEditHandler('add')">新增</el-button>
     </div>
     <div ref="centerRef" class="center">
       <el-table
@@ -12,27 +12,27 @@
         row-key="id"
         :border="true"
         default-expand-all
-        :data="list"
+        :data="listData"
         @current-change="handleCurrentChange"
       >
         <el-table-column prop="title" label="名称" />
-        <el-table-column prop="icon" label="图标" />
-        <el-table-column prop="router" label="链接地址" />
-        <el-table-column prop="component" label="组件" />
-        <el-table-column label="创建时间">
+        <el-table-column prop="icon" label="图标" :align="'center'" />
+        <el-table-column prop="path" label="URL" :align="'center'" />
+        <el-table-column prop="component" label="组件名" :align="'center'" />
+        <el-table-column label="创建时间" :align="'center'">
           <template #default="scope">
-            {{ useFormatDate(scope.row.created) }}
+            {{ useFormatDate(scope.row.createTime) }}
           </template>
         </el-table-column>
-        <el-table-column label="修改时间">
+        <el-table-column label="修改时间" :align="'center'">
           <template #default="scope">
-            {{ useFormatDate(scope.row.updated) }}
+            {{ useFormatDate(scope.row.updateTime) }}
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" :align="'center'">
           <template #default="scope">
-            <el-button size="small" type="warning" @click.stop="editItem(scope.row)">编辑</el-button>
-            <el-button size="small" type="danger" @click.stop="deleteItem(scope.row.id)">删除</el-button>
+            <el-button size="small" type="warning" @click.stop="addOrEditHandler('edit', scope.row.id)">编辑</el-button>
+            <el-button size="small" type="danger" @click.stop="deleteItemHandler(scope.row.id)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -43,99 +43,116 @@
         background
         layout="prev, pager, next, sizes, total"
         :total="form.total"
+        @size-change="paginationSizeChangeHandler"
+        @current-change="paginationCurrentChangeHandler"
       />
     </div>
   </div>
-  <Edit v-if="flag" :title="title" :item="currentItem" @close="close"></Edit>
+  <Edit v-if="flag" :title="title" :item="editData" @close="close"></Edit>
 </template>
 
 <script lang="ts" setup>
-import Axios from '@/utils/http';
-import { ElMessageBox, ElMessage } from 'element-plus';
-import { onMounted, reactive, ref, toRaw } from 'vue';
-import Edit from './Edit/index.vue';
 import { useFormatDate } from '@/hooks/commons';
+import { deleteMenu, getMenuById, getMenuList } from '@/api';
+import Edit from './Edit/index.vue';
 
-const list = ref([]);
-const currentRow = ref();
+// table
+const listData = ref([]);
 const tableHeight = ref<number>();
 const centerRef = ref<HTMLElement>();
+const selectedRow = ref<any>(null);
+
+// form
 const form = reactive({
   menuName: '',
   pageNumber: 1,
   pageSize: 20,
   total: 0,
 });
+
 // dialog
 const flag = ref<boolean>(false);
-const title = ref<string>('新增菜单');
-const currentItem = ref<any>();
-
-// 新增
-const add = () => {
-  currentItem.value = currentRow.value ? currentRow.value.id : 0;
-  flag.value = true;
-  title.value = '新增菜单';
-};
-
-// 编辑
-const editItem = (item: any) => {
-  currentItem.value = item;
-  flag.value = true;
-  title.value = '编辑菜单';
-};
-
-// 弹窗关闭回调
-const close = (f: boolean) => {
-  flag.value = false;
-  if (!f) return;
-  getList();
-};
-
-// 当前行改变
-const handleCurrentChange = (val: any) => {
-  currentRow.value = val;
-};
-
-// 删除
-const deleteItem = (id: number) => {
-  ElMessageBox.confirm('确定要删除此项吗？', '删除', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'error',
-  }).then(async () => {
-    let res = await Axios.post('/menu/delete', { id });
-    if (res.status == 0) {
-      ElMessage.success('删除成功!');
-      getList();
-    } else {
-      ElMessage.error(res.message);
-    }
-  });
-};
-
-// 获取权限列表
-const getList = async () => {
-  let { data, total } = await Axios.post('/menu/list', toRaw(form));
-  list.value = data;
-  form.total = total;
-};
+const title = ref<string>('');
+const editData = ref<any>();
 
 onMounted(() => {
-  getList();
+  getListHandler();
   let height = centerRef.value?.clientHeight;
   tableHeight.value = height ? height - 20 : 0;
 });
-</script>
 
-<script lang="ts">
-export default {
-  name: 'Menus',
+// selected row
+const handleCurrentChange = (currentRow: any) => {
+  selectedRow.value = currentRow;
 };
+
+// add / edit
+const addOrEditHandler = async (value: string, id?: number) => {
+  title.value = value;
+  if (id) {
+    let { data } = await getMenuById(id);
+    editData.value = data;
+  } else {
+    editData.value = selectedRow.value ? toRaw(selectedRow.value) : null;
+  }
+  flag.value = true;
+};
+
+const paginationSizeChangeHandler = (pageSize: number) => {
+  form.pageSize = pageSize;
+  getListHandler();
+};
+
+// pagination current change
+const paginationCurrentChangeHandler = (currentPage: number) => {
+  form.pageNumber = currentPage;
+  getListHandler();
+};
+
+// close
+const close = (f: boolean) => {
+  flag.value = false;
+  if (!f) return;
+  getListHandler();
+};
+
+// deleted
+const deleteItemHandler = (id: number) => {
+  ElMessageBox.alert('确定要删除此项吗？', '删除', {
+    confirmButtonText: '确定',
+    type: 'error',
+  })
+    .then(async () => {
+      let { code, message } = await deleteMenu({ ids: [id] });
+      if (code == 200) {
+        ElMessage.success('删除成功!');
+        getListHandler();
+      } else {
+        ElMessage.error(message);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+// get menu list
+const getListHandler = async () => {
+  let {
+    data: { list, total },
+  } = await getMenuList(toRaw(form));
+  listData.value = list;
+  form.total = total;
+};
+
+// options
+defineOptions({
+  name: 'Menus',
+});
 </script>
 
 <style lang="scss" scoped>
-.menu {
+.permission {
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -154,7 +171,7 @@ export default {
   }
 
   .footer {
-    padding: 10px 0;
+    padding: 10px;
     height: 40px;
     display: flex;
     align-items: center;
