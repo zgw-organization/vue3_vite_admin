@@ -58,3 +58,5 @@ revert回退某个commit提交
 
 # 静态资源处理 new URL('../assets/images/home.png', import.meta.url).href
 # 组件自动化注册  读取@/components/BaseEchartsModel下所有.vue文件  import.meta.glob('@/components/BaseEchartsModel/*.vue');
+
+
