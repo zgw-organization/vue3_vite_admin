@@ -14,7 +14,7 @@
         text-color="#fff"
         @select="handleSelect"
       >
-        <Sidebar :data="user.menu"></Sidebar>
+        <SidebarItem :data="user.menu"></SidebarItem>
       </el-menu>
     </el-aside>
     <el-container>
@@ -56,7 +56,7 @@
 </template>
 
 <script lang="ts" setup>
-import Sidebar from '@/components/SidebarItem.vue';
+import SidebarItem from '@/components/SidebarItem.vue';
 import KeepAliveWrapper from '@/components/KeepAliveWrapper.vue';
 import useStore from '@/store';
 import { clearToken } from '@/utils/token';
