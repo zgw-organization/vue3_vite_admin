@@ -4,7 +4,6 @@ import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
 import App from './App.vue';
 import router from './router';
 import plugins from './plugins';
-import Loading from './plugins/Loading';
 // import { mockRequest } from '@/mock';
 
 const app = createApp(App);
@@ -24,9 +23,6 @@ app.use(store);
 
 // 注册路由
 app.use(router);
-
-// 注册自定义插件
-app.use(Loading);
 
 // 注册公共插件
 app.use(plugins);

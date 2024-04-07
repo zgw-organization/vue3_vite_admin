@@ -1,17 +1,17 @@
-import { createVNode, render, type App, type VNode } from 'vue';
-import Loading from './index.vue';
+// import { createVNode, render, type App, type VNode } from 'vue';
+// import Loading from './index.vue';
 
 export default {
-  install(app: App) {
+  install() {
     // 创建虚拟dom
-    const Vnode: VNode = createVNode(Loading);
-    // 渲染dom
-    render(Vnode, document.body);
-    // 绑定loading
-    app.config.globalProperties.$loading = {
-      show: Vnode.component?.exposed?.show,
-      hide: Vnode.component?.exposed?.hide,
-    };
+    // const Vnode: VNode = createVNode(Loading);
+    // // 渲染dom
+    // render(Vnode, document.body);
+    // // 绑定loading
+    // app.config.globalProperties.$loading = {
+    //   show: Vnode.component?.exposed?.show,
+    //   hide: Vnode.component?.exposed?.hide,
+    // };
   },
 };
 
