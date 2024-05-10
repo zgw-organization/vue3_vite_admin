@@ -46,7 +46,8 @@ const rules = reactive<FormRules>({
   password: [{ required: true, message: '请输入密码!', trigger: 'blur' }],
   code: [{ required: true, message: '请输入验证码!', trigger: 'blur' }],
 });
-const codeUrl = ref('http://localhost:3300/api/v1/auth/code');
+const host = import.meta.env.VITE_MODE === 'production' ? import.meta.env.VITE_BASE_URL : 'http://localhost:3300';
+const codeUrl = ref(`http://${host}/api/v1/auth/code`);
 
 // 重置验证码
 const resetCode = () => {
