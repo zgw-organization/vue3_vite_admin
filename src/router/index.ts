@@ -1,12 +1,12 @@
 // import useStore from '@/store';
 // import { getToken } from '@/utils/token';
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHashHistory } from 'vue-router';
 import routes from './routes';
 import useStore from '@/store';
 import { getToken } from '@/utils/token';
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.VITE_BASE_PATH),
+  history: createWebHashHistory(),
   routes,
   // 滚动行为
   scrollBehavior: (_to, _from, savePosition) => {
