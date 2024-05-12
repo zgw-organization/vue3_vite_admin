@@ -10,9 +10,9 @@ import path from 'path';
 
 // https://vitejs.dev/config/
 export default ({ mode }: any) => {
-  console.log('mode', loadEnv(mode, process.cwd()));
+  const modeEnv = loadEnv(mode, process.cwd());
   return defineConfig({
-    base: '/',
+    base: modeEnv.VITE_BASE_PATH,
     plugins: [
       vue(),
       vueJsx(),
@@ -23,7 +23,7 @@ export default ({ mode }: any) => {
         // 自动导入eslint配置
         eslintrc: {
           enabled: false, // eslint检查 已存在文件设置默认false，需要更新时再打开，防止每次更新都重新生成
-          filepath: './.eslintrc-auto-import.json',  // 生成的文件需要在.eslintrc extends中添加
+          filepath: './.eslintrc-auto-import.json', // 生成的文件需要在.eslintrc extends中添加
           globalsPropValue: true,
         },
       }),

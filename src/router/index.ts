@@ -6,7 +6,7 @@ import useStore from '@/store';
 import { getToken } from '@/utils/token';
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(import.meta.env.VITE_BASE_PATH),
   routes,
   // 滚动行为
   scrollBehavior: (_to, _from, savePosition) => {
